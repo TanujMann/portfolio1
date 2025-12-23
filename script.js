@@ -69,7 +69,7 @@ window.openProject = function(id){
 
   const projects = {
     1: {
-      img: "images/projects/zom.jpg",
+      img: "zom.jpg",
       title: "Zomato Sales Dashboard",
       desc: "Interactive Power BI dashboard analyzing Sales and Growth metrics.",
       github: "https://github.com/TanujMann/Zomato-Dashboard",
@@ -236,8 +236,8 @@ window.addEventListener("keydown", (e) => {
 });
 document.addEventListener("DOMContentLoaded", () => {
   const profileImages = [
-    "images/profile.jpg",
-    "images/profile1.jpg"
+    "profile.jpg",
+    "profile1.jpg"
   ];
 
   let currentProfile = 0;
@@ -266,3 +266,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 800);
   }, 10000);
 });
+
