@@ -1359,6 +1359,83 @@ body{
   }
 }
 
+/* ========================= */
+/* 🚀 INTRO SCREEN */
+/* ========================= */
+
+#intro-screen{
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: introFadeOut 1s ease forwards;
+  animation-delay: 4.8s;
+}
+
+.terminal{
+  font-family: "Courier New", monospace;
+  color: #ccc;
+  font-size: 15px;
+  line-height: 1.8;
+  max-width: 90%;
+}
+
+.green{
+  color: #00ff88;
+}
+
+.purple{
+  color: #b44cff;
+}
+
+.name{
+  color: #b44cff;
+  font-weight: bold;
+}
+
+/* Typing animation */
+.typing{
+  margin-top: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+  animation: typing 2.2s steps(40, end) forwards;
+  animation-delay: 2.2s;
+}
+
+/* Cursor blink */
+.cursor{
+  animation: blink 1s infinite;
+}
+
+/* Animations */
+@keyframes typing{
+  from{ width: 0 }
+  to{ width: 100% }
+}
+
+@keyframes blink{
+  0%,50%,100%{ opacity:1 }
+  25%,75%{ opacity:0 }
+}
+
+@keyframes introFadeOut{
+  to{
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Mobile sizing */
+@media (max-width: 768px){
+  .terminal{
+    font-size: 14px;
+  }
+}
+
 
 
 
