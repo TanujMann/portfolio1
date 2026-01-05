@@ -81,9 +81,11 @@ body{
 
 .hero-image img{
   width:90%;
-  opacity:0.5;
-  filter:grayscale(100%);
+  opacity:1;
+  filter: grayscale(100%) brightness(0.9); /* subtle cinematic */
+  transition: filter 0.8s ease-in-out;
 }
+
 
 /* CONTENT */
 .hero-content{
@@ -1338,6 +1340,7 @@ body{
     justify-content: center;
   }
 }
+
 
 
 
