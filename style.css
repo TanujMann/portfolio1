@@ -1080,3 +1080,163 @@ body{
   object-position: center 30% /* keeps face visible */
   transform: scale(0.92);
 }
+/* ========================= */
+/* 📱 MOBILE OPTIMIZATION */
+/* ========================= */
+
+@media (max-width: 768px) {
+
+  /* ---------- NAVBAR ---------- */
+  .navbar {
+    flex-direction: column;
+    padding: 14px 20px;
+    gap: 12px;
+  }
+
+  .navbar nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .navbar nav a {
+    margin: 0;
+    font-size: 12px;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    height: auto;
+    padding: 90px 20px 60px;
+    text-align: center;
+  }
+
+  .hero-content h1 {
+    font-size: 36px;
+    line-height: 1.2;
+  }
+
+  .roles {
+    font-size: 14px;
+  }
+
+  .hero-content p {
+    font-size: 14px;
+  }
+
+  /* Hide hero image (already correct but reinforced) */
+  .hero-image {
+    display: none;
+  }
+
+  /* ---------- BUTTONS ---------- */
+  .buttons {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .resume-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* ---------- SOCIAL ICONS ---------- */
+  .socials {
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .socials a {
+    font-size: 24px;
+  }
+
+  /* ---------- STATUS BADGE ---------- */
+  .status-badge {
+    font-size: 13px;
+    margin: 16px auto;
+  }
+
+  /* ---------- SKILLS ---------- */
+  .skills {
+    padding: 70px 20px;
+  }
+
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-card {
+    max-width: 100%;
+  }
+
+  /* ---------- PROJECTS ---------- */
+  .projects {
+    padding: 70px 20px;
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-body {
+    height: 200px;
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about {
+    padding: 80px 20px;
+  }
+
+  .about-content h2 {
+    font-size: 32px;
+  }
+
+  .about-content p {
+    font-size: 14px;
+  }
+
+  .profile-ring {
+    width: 200px;
+    height: 200px;
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact {
+    padding: 80px 20px;
+  }
+
+  .contact-container {
+    padding: 40px 20px;
+  }
+
+  .contact-container h2 {
+    font-size: 32px;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    font-size: 14px;
+  }
+
+  .contact-form button {
+    width: 100%;
+  }
+
+  /* ---------- CTA CARDS ---------- */
+  .cta-card {
+    width: 140px;
+    height: 100px;
+  }
+
+  /* ---------- MODALS ---------- */
+  .project-modal-box {
+    padding: 20px;
+  }
+
+  /* ---------- CURSOR GLOW ---------- */
+  .cursor-glow {
+    display: none; /* improves mobile performance */
+  }
+}
+
