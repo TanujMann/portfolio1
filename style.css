@@ -1340,6 +1340,22 @@ body{
     justify-content: center;
   }
 }
+@media (max-width: 768px){
+
+  .hero-image{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  .hero-image img{
+    width: 220px;
+    max-width: 80%;
+    opacity: 1;
+    filter: grayscale(0);        /* ✅ bright on mobile */
+  }
+}
+
 
 
 
