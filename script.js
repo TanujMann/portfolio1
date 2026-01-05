@@ -265,14 +265,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 800);
   }, 10000);
 });
-// INTRO SCREEN CONTROL
+// 🚀 INTRO SCREEN SAFE HANDLER
 window.addEventListener("load", () => {
   const intro = document.getElementById("intro-screen");
+  if (!intro) return;
 
+  // Hide intro after animation
   setTimeout(() => {
-    intro.style.display = "none";
-  }, 5800); // sync with animation
+    intro.classList.add("hide");
+
+    setTimeout(() => {
+      intro.remove(); // 💥 fully removes overlay
+    }, 900);
+
+  }, 4500); // total intro duration
 });
+
+
 
 
 
