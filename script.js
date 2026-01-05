@@ -265,21 +265,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 800);
   }, 10000);
 });
-// 🚀 INTRO SCREEN SAFE HANDLER
-window.addEventListener("load", () => {
+// 🚀 INTRO SCREEN (BULLETPROOF)
+document.addEventListener("DOMContentLoaded", () => {
   const intro = document.getElementById("intro-screen");
   if (!intro) return;
 
-  // Hide intro after animation
+  // Lock scroll during intro
+  document.body.style.overflow = "hidden";
+
   setTimeout(() => {
-    intro.classList.add("hide");
+    intro.style.opacity = "0";
 
     setTimeout(() => {
-      intro.remove(); // 💥 fully removes overlay
+      intro.remove();
+      document.body.style.overflow = "auto";
     }, 900);
 
-  }, 4500); // total intro duration
+  }, 4200);
 });
+
+
 
 
 
