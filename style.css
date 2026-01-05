@@ -1402,6 +1402,9 @@ body{
   animation: typing 2s steps(40,end) forwards;
   animation-delay: 2s;
 }
-
 .cursor{
-  animation: blink 1s infinit
+  animation: blink 1s infinite;
+}
+
+
+
