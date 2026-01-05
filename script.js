@@ -265,24 +265,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 800);
   }, 10000);
 });
-// 🚀 INTRO SCREEN (BULLETPROOF)
+// ✨ PREMIUM INTRO TYPING
 document.addEventListener("DOMContentLoaded", () => {
+  const text = "Welcome to the World of Tanuj Mann";
+  const el = document.getElementById("intro-text");
   const intro = document.getElementById("intro-screen");
-  if (!intro) return;
 
-  // Lock scroll during intro
+  if (!el || !intro) return;
+
+  let i = 0;
   document.body.style.overflow = "hidden";
 
-  setTimeout(() => {
-    intro.style.opacity = "0";
+  const typing = setInterval(() => {
+    el.textContent += text[i];
+    i++;
 
-    setTimeout(() => {
-      intro.remove();
-      document.body.style.overflow = "auto";
-    }, 900);
+    if (i >= text.length) {
+      clearInterval(typing);
 
-  }, 4200);
+      // Exit intro
+      setTimeout(() => {
+        intro.classList.add("hide");
+
+        setTimeout(() => {
+          intro.remove();
+          document.body.style.overflow = "auto";
+        }, 900);
+
+      }, 1200);
+    }
+  }, 60);
 });
+;
+
 
 
 
