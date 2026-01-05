@@ -1336,19 +1336,30 @@ body{
 }
 @media (max-width: 768px){
 
+  .hero{
+    padding: 40px 20px 60px;
+    text-align: center;
+  }
+
   .hero-image{
     display: flex;
     justify-content: center;
-    margin-bottom: 24px;
+    margin-bottom: 14px;
   }
 
   .hero-image img{
-    width: 220px;
-    max-width: 80%;
+    width: 200px;
     opacity: 1;
-    filter: grayscale(0);        /* ✅ bright on mobile */
+    filter: grayscale(0);
+  }
+
+  .hero-content{
+    align-items: center;
+    margin-top: -10px;
   }
 }
+
+
 
 
 
