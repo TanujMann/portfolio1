@@ -1360,7 +1360,7 @@ body{
 }
 
 /* ========================= */
-/* 🚀 INTRO SCREEN (FIXED) */
+/* ✨ PREMIUM INTRO */
 /* ========================= */
 
 #intro-screen{
@@ -1381,31 +1381,80 @@ body{
   pointer-events: none;
 }
 
-.terminal{
+/* Center block */
+.intro-center{
+  position: relative;
+  text-align: center;
+}
+
+/* Glow */
+.intro-glow{
+  position: absolute;
+  inset: -40px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(180,76,255,0.35),
+    transparent 70%
+  );
+  animation: glowPulse 2.2s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes glowPulse{
+  0%{ transform: scale(0.9); opacity:0.6 }
+  50%{ transform: scale(1.05); opacity:1 }
+  100%{ transform: scale(0.9); opacity:0.6 }
+}
+
+/* Text */
+.intro-title{
   font-family: "Courier New", monospace;
-  color: #ccc;
-  font-size: 15px;
-  line-height: 1.8;
-  max-width: 90%;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #fff;
 }
 
-.green{ color: #00ff88; }
-.purple{ color: #b44cff; }
-.name{ color: #b44cff; font-weight: bold; }
-
-/* Typing effect */
-.typing{
-  margin-top: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  width: 0;
-  animation: typing 2s steps(40,end) forwards;
-  animation-delay: 2s;
+.prompt{
+  color: #00ff88;
+  margin-right: 6px;
 }
+
+#intro-text{
+  color: #b44cff;
+}
+
 .cursor{
+  color: #b44cff;
   animation: blink 1s infinite;
 }
 
+/* Subtitle */
+.intro-sub{
+  margin-top: 14px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: #aaa;
+  opacity: 0;
+  animation: subFade 0.8s ease forwards;
+  animation-delay: 1.8s;
+}
+
+@keyframes blink{
+  0%,50%,100%{opacity:1}
+  25%,75%{opacity:0}
+}
+
+@keyframes subFade{
+  to{ opacity:1 }
+}
+
+/* Mobile */
+@media(max-width:768px){
+  .intro-title{ font-size: 18px }
+  .intro-sub{ font-size: 13px }
+}
 
 
 
