@@ -265,5 +265,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 800);
   }, 10000);
 });
+// INTRO SCREEN CONTROL
+window.addEventListener("load", () => {
+  const intro = document.getElementById("intro-screen");
+
+  setTimeout(() => {
+    intro.style.display = "none";
+  }, 5800); // sync with animation
+});
+
 
 
