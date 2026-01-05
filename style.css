@@ -207,14 +207,8 @@ body{
     gap:20px;
     margin-top:14px;
   }
-
-  .hero-image{
-    display:none;
-  }
 }
 
-/* Keep spacing clean */
-.buttons{
   margin-top: 28px;
 }
 
@@ -1355,6 +1349,7 @@ body{
     filter: grayscale(0);        /* ✅ bright on mobile */
   }
 }
+
 
 
 
