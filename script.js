@@ -236,7 +236,6 @@ window.addEventListener("keydown", (e) => {
 });
 document.addEventListener("DOMContentLoaded", () => {
   const profileImages = [
-    "profile.jpg",
     "profile1.jpg"
   ];
 
@@ -266,4 +265,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 800);
   }, 10000);
 });
+
 
