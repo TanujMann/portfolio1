@@ -1867,12 +1867,18 @@ body.light-mode .resume-tooltip::after{
   box-shadow: 0 0 16px rgba(37,99,235,0.45);
 }
 #particles-js{
-  position: fixed;
-  inset: 0;
+  position: absolute;   /* 🔥 changed from fixed */
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100vh;
+
   z-index: 0;
   pointer-events: none;
-  background: transparent;
 }
+
+
 
 
 
