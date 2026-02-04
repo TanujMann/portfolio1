@@ -1533,10 +1533,6 @@ body.light-mode .project-links a{
   border-color: #2563eb;
 }
 
-/* PARTICLES BACKGROUND */
-body.light-mode #particles-js{
-  background: #ffffff;
-}
 /* =============================== */
 /* 🌞 LIGHT MODE DEFAULT */
 /* =============================== */
@@ -1875,8 +1871,10 @@ body.light-mode .resume-tooltip::after{
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: transparent; /* ❗ IMPORTANT */
+  background: transparent;
 }
+
+
 
 
 
