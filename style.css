@@ -1877,6 +1877,23 @@ body.light-mode .resume-tooltip::after{
   z-index: 0;
   pointer-events: none;
 }
+.hero{
+  position: relative;   /* 🔥 REQUIRED */
+  min-height: 100vh;
+  overflow: hidden;     /* 🔥 stops particles leaking */
+}
+header,
+.hero,
+section{
+  position: relative;
+  z-index: 2;
+}
+@media (max-width: 768px){
+  #particles-js{
+    height: 100vh;
+  }
+}
+
 
 
 
