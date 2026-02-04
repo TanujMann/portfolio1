@@ -265,41 +265,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 800);
   }, 10000);
 });
-// ✨ PREMIUM INTRO TYPING
-document.addEventListener("DOMContentLoaded", () => {
-  const text = "Welcome to the World of Tanuj Mann";
-  const el = document.getElementById("intro-text");
-  const intro = document.getElementById("intro-screen");
-
-  if (!el || !intro) return;
-
-  let i = 0;
-  document.body.style.overflow = "hidden";
-
-  const typing = setInterval(() => {
-    el.textContent += text[i];
-    i++;
-
-    if (i >= text.length) {
-      clearInterval(typing);
-
-      // Exit intro
-      setTimeout(() => {
-        intro.classList.add("hide");
-
-        setTimeout(() => {
-          intro.remove();
-          document.body.style.overflow = "auto";
-        }, 900);
-
-      }, 1200);
-    }
-  }, 60);
-});
 const DARK = "#b44cff";
 const LIGHT = "#2563eb";
 
-function updateParticles(color) {
+/* default light BEFORE paint already handled in <head> */
+
+function updateParticles(color){
   if (!window.pJSDom || !pJSDom[0]) return;
   const p = pJSDom[0].pJS;
   p.particles.color.value = color;
@@ -307,27 +278,17 @@ function updateParticles(color) {
   p.fn.particlesRefresh();
 }
 
-function initThemeAfterIntro() {
+window.addEventListener("load", () => {
+  updateParticles(LIGHT);
+
   const toggle = document.getElementById("themeToggle");
-  const icon = toggle?.querySelector("i");
+  const icon = toggle.querySelector("i");
 
-  // 🌞 DEFAULT LIGHT
-  document.body.classList.add("light-mode");
-  if (icon) icon.className = "fas fa-moon";
-  setTimeout(() => updateParticles(LIGHT), 200);
+  toggle.addEventListener("click", () => {
+    const isLight =
+      document.documentElement.classList.toggle("light-mode");
 
-  toggle?.addEventListener("click", () => {
-    const light = document.body.classList.toggle("light-mode");
-    if (icon) icon.className = light ? "fas fa-moon" : "fas fa-sun";
-    updateParticles(light ? LIGHT : DARK);
+    icon.className = isLight ? "fas fa-moon" : "fas fa-sun";
+    updateParticles(isLight ? LIGHT : DARK);
   });
-}
-
-
-
-
-
-
-
-
-
+});
