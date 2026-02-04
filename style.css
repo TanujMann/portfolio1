@@ -1828,6 +1828,19 @@ body.light-mode .resume-tooltip::after{
 }
 
 /
+/* 🔥 HERO IMAGE FIX */
+.hero-image img{
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+
+  object-fit: cover;
+  object-position: center top; /* keeps face visible */
+
+  filter: grayscale(100%) contrast(1.05);
+  border-radius: 12px;
+}
+
 
 
 
