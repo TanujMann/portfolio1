@@ -1845,6 +1845,32 @@ body.light-mode .resume-tooltip::after{
   justify-content: center;
   align-items: center;
 }
+/* 🌗 HEADER THEME TOGGLE FIX */
+.theme-toggle{
+  background: transparent;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  flex-shrink: 0; /* VERY IMPORTANT */
+
+  transition: 0.3s ease;
+}
+
+.theme-toggle:hover{
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(37,99,235,0.45);
+}
+
 
 
 
