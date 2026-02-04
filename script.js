@@ -296,7 +296,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, 60);
 });
-;
+const DARK = "#b44cff";
+const LIGHT = "#2563eb";
+
+function updateParticles(color) {
+  if (!window.pJSDom || !pJSDom[0]) return;
+  const p = pJSDom[0].pJS;
+  p.particles.color.value = color;
+  p.particles.line_linked.color = color;
+  p.fn.particlesRefresh();
+}
+
+function initThemeAfterIntro() {
+  const toggle = document.getElementById("themeToggle");
+  const icon = toggle?.querySelector("i");
+
+  // 🌞 DEFAULT LIGHT
+  document.body.classList.add("light-mode");
+  if (icon) icon.className = "fas fa-moon";
+  setTimeout(() => updateParticles(LIGHT), 200);
+
+  toggle?.addEventListener("click", () => {
+    const light = document.body.classList.toggle("light-mode");
+    if (icon) icon.className = light ? "fas fa-moon" : "fas fa-sun";
+    updateParticles(light ? LIGHT : DARK);
+  });
+}
+
 
 
 
