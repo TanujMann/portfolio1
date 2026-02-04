@@ -1455,6 +1455,381 @@ body{
   .intro-title{ font-size: 18px }
   .intro-sub{ font-size: 13px }
 }
+/* ========================= */
+/* 🌗 THEME TOGGLE BUTTON */
+/* ========================= */
+#themeToggle{
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  z-index: 99999;
+
+  background: var(--accent);
+  color: #000;
+  font-size: 18px;
+
+  box-shadow: 0 0 20px rgba(180,76,255,0.6);
+  transition: 0.3s ease;
+}
+
+#themeToggle:hover{
+  transform: scale(1.1);
+}
+
+/* ========================= */
+/* 🌞 LIGHT MODE OVERRIDES */
+/* ========================= */
+body.light-mode{
+  --accent: #2563eb; /* BLUE */
+  background: #ffffff;
+  color: #000;
+}
+
+/* TEXT */
+body.light-mode p,
+body.light-mode h1,
+body.light-mode h2,
+body.light-mode h3,
+body.light-mode h4,
+body.light-mode span,
+body.light-mode a{
+  color: #000;
+}
+
+/* NAVBAR */
+body.light-mode .navbar{
+  background: rgba(255,255,255,0.9);
+}
+
+/* STATUS BADGE */
+body.light-mode .status-badge{
+  background: rgba(37,99,235,0.12);
+  border-color: rgba(37,99,235,0.4);
+  color: #2563eb;
+}
+
+body.light-mode .status-dot{
+  background: #2563eb;
+}
+
+/* CARDS */
+body.light-mode .skill-card,
+body.light-mode .project-card,
+body.light-mode .contact-container{
+  background: #f8fafc;
+  border-color: rgba(37,99,235,0.35);
+}
+
+/* BUTTONS */
+body.light-mode .resume-btn,
+body.light-mode .contact-form button,
+body.light-mode .project-links a{
+  color: #2563eb;
+  border-color: #2563eb;
+}
+
+/* PARTICLES BACKGROUND */
+body.light-mode #particles-js{
+  background: #ffffff;
+}
+/* =============================== */
+/* 🌞 LIGHT MODE DEFAULT */
+/* =============================== */
+body{
+  --accent: #2563eb; /* blue */
+}
+
+body:not(.light-mode){
+  --accent: #b44cff; /* violet */
+}
+
+/* =============================== */
+/* ✨ GRADIENT GLOW – LIGHT MODE */
+/* =============================== */
+body.light-mode .skill-card:hover,
+body.light-mode .project-card:hover,
+body.light-mode .contact-container:hover{
+  box-shadow:
+    0 0 20px rgba(37,99,235,0.85),
+    0 0 45px rgba(96,165,250,0.6),
+    0 0 80px rgba(147,197,253,0.45);
+}
+
+body.light-mode .profile-ring{
+  border-color: #2563eb;
+  box-shadow:
+    0 0 25px rgba(37,99,235,0.8),
+    0 0 55px rgba(96,165,250,0.55),
+    0 0 95px rgba(147,197,253,0.4);
+}
+
+/* =============================== */
+/* 🟣 GRADIENT GLOW – DARK MODE */
+/* =============================== */
+body:not(.light-mode) .skill-card:hover,
+body:not(.light-mode) .project-card:hover,
+body:not(.light-mode) .contact-container:hover{
+  box-shadow:
+    0 0 20px rgba(180,76,255,0.85),
+    0 0 45px rgba(200,120,255,0.6),
+    0 0 80px rgba(220,170,255,0.45);
+}
+
+body:not(.light-mode) .profile-ring{
+  box-shadow:
+    0 0 25px rgba(180,76,255,0.8),
+    0 0 55px rgba(200,120,255,0.55),
+    0 0 95px rgba(220,170,255,0.4);
+}
+
+/* ================================================= */
+/* 🌞 LIGHT THEME – CLEAN PREMIUM UI FIX (FINAL) */
+/* ================================================= */
+
+/* ---------- GLOBAL LIGHT BASE ---------- */
+body.light-mode{
+  background: #ffffff;
+  color: #0f172a;
+}
+
+/* ---------- SECTION BACKGROUND ---------- */
+body.light-mode section{
+  background: linear-gradient(to bottom, #ffffff, #f8fafc);
+}
+
+/* ================================================= */
+/* 🧩 SKILLS SECTION – REMOVE BLACK CARDS */
+/* ================================================= */
+
+body.light-mode .skill-card{
+  background: #f8fafc;
+  border: 1px solid rgba(37,99,235,0.35);
+  box-shadow: 0 4px 12px rgba(15,23,42,0.06);
+}
+
+body.light-mode .skill-footer{
+  background: transparent;
+  color: #0f172a;
+}
+
+body.light-mode .skill-body img{
+  filter: none;
+}
+
+/* ================================================= */
+/* 📩 CONTACT SECTION – REMOVE BLACK INPUTS */
+/* ================================================= */
+
+body.light-mode .contact-container{
+  background: #f8fafc;
+  border: 1px solid rgba(37,99,235,0.35);
+}
+
+/* Inputs & textarea */
+body.light-mode .contact-form input,
+body.light-mode .contact-form textarea{
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid rgba(37,99,235,0.35);
+}
+
+/* Placeholder */
+body.light-mode .contact-form input::placeholder,
+body.light-mode .contact-form textarea::placeholder{
+  color: #64748b;
+}
+
+/* Focus state */
+body.light-mode .contact-form input:focus,
+body.light-mode .contact-form textarea:focus{
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.18);
+}
+
+/* Send button */
+body.light-mode .contact-form button{
+  background: #eef2ff;
+  color: #2563eb;
+  border: 2px solid #2563eb;
+}
+
+body.light-mode .contact-form button:hover{
+  background: #2563eb;
+  color: #ffffff;
+}
+
+/* ================================================= */
+/* ✨ GRADIENT BLUE GLOW (LIGHT MODE) */
+/* ================================================= */
+
+body.light-mode .skill-card:hover,
+body.light-mode .project-card:hover,
+body.light-mode .contact-container:hover{
+  box-shadow:
+    0 0 20px rgba(37,99,235,0.8),
+    0 0 45px rgba(96,165,250,0.55),
+    0 0 85px rgba(147,197,253,0.35);
+}
+
+/* About image glow */
+body.light-mode .profile-ring{
+  border-color: #2563eb;
+  box-shadow:
+    0 0 25px rgba(37,99,235,0.75),
+    0 0 55px rgba(96,165,250,0.45),
+    0 0 95px rgba(147,197,253,0.3);
+}
+html.light-mode body{
+  background: #ffffff;
+  color: #0f172a;
+}
+/* ======================================= */
+/* 📄 RESUME BUTTON – LIGHT MODE FIX */
+/* ======================================= */
+
+/* Button */
+body.light-mode .resume-btn{
+  background: #ffffff;
+  border: 2px solid #2563eb;
+  color: #2563eb;
+  box-shadow: 0 6px 18px rgba(37,99,235,0.15);
+}
+
+/* Hover */
+body.light-mode .resume-btn:hover{
+  background: #eef2ff;
+}
+
+/* Download count badge */
+body.light-mode .download-badge{
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.25);
+}
+
+/* Tooltip */
+body.light-mode .resume-tooltip{
+  background: rgba(37,99,235,0.12);
+  color: #0f172a;
+  border: 1px solid rgba(37,99,235,0.35);
+  box-shadow: 0 8px 24px rgba(37,99,235,0.2);
+  backdrop-filter: blur(10px);
+}
+/* ======================================= */
+/* 📄 RESUME TOOLTIP – POSITION FIX */
+/* ======================================= */
+
+.resume-wrapper{
+  margin-top: 36px; /* creates space from text above */
+}
+
+/* Tooltip position */
+body.light-mode .resume-tooltip{
+  bottom: calc(100% + 14px); /* move tooltip up */
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 20;
+}
+
+/* Small arrow (optional but premium) */
+body.light-mode .resume-tooltip::after{
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background: rgba(37,99,235,0.12);
+  border-left: 1px solid rgba(37,99,235,0.35);
+  border-bottom: 1px solid rgba(37,99,235,0.35);
+  transform: translateX(-50%) rotate(45deg);
+}
+/* ======================================= */
+/* 🧠 SKILL LEVEL BADGE – HEADER FIX */
+/* ======================================= */
+
+/* Make header relative so badge can sit inside */
+.skill-header{
+  position: relative;
+}
+
+/* Move skill level into black header bar */
+.skill-level{
+  position: absolute;
+  top: 6px;
+  right: 12px;
+
+  padding: 3px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 14px;
+
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+
+  opacity: 1;               /* always visible now */
+  transform: none;
+}
+
+/* ======================================= */
+/* 🎯 LEVEL COLORS (UNCHANGED LOGIC) */
+/* ======================================= */
+
+.skill-level.expert{
+  color: #00ffcc;
+  border: 1px solid #00ffcc;
+}
+
+.skill-level.advanced{
+  color: #2563eb;
+  border: 1px solid #2563eb;
+}
+
+.skill-level.intermediate{
+  color: #ffaa00;
+  border: 1px solid #ffaa00;
+}
+/* ======================================= */
+/* 🌗 THEME TOGGLE – HEADER RIGHT */
+/* ======================================= */
+
+.theme-toggle{
+  background: transparent;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-left: 24px;
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.theme-toggle:hover{
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(37,99,235,0.5);
+}
+
+/
+
+
 
 
 
