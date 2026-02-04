@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+  /* 🌞 FORCE LIGHT MODE BEFORE RENDER */
+  document.documentElement.classList.add("light-mode");
+</script>
+
 <meta name="description" content="Tanuj Mann | Data Scientist, Machine Learning Enthusiast, Portfolio">
 <meta name="keywords" content="Data Science, Machine Learning, Portfolio, Power BI">
 
@@ -426,26 +431,13 @@
 <div class="cursor-glow"></div>
 <audio id="clickSound" src="sounds/click.mp3" preload="auto"></audio>
 <div id="easter-egg">Models over memes 😉</div>
-
-<!-- INTRO SCREEN -->
-<div id="intro-screen">
-  <div class="intro-center">
-    <div class="intro-glow"></div>
-
-    <h1 class="intro-title">
-      <span class="prompt">&gt;</span>
-      <span id="intro-text"></span><span class="cursor">|</span>
-    </h1>
-
-    <p class="intro-sub">
-      Data • Machine Learning • Creativity
-    </p>
-  </div>
-</div>
-
-
+  <!-- 🌗 THEME TOGGLE -->
+<button id="themeToggle" aria-label="Toggle Theme">
+  <i class="fas fa-sun"></i>
+</button>
 </body>
 </html>
+
 
 
 
