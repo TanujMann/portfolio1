@@ -107,31 +107,38 @@ window.closeProject = function(){
 particlesJS("particles-js", {
   particles: {
     number: {
-      value: 80,
+      value: 70,
       density: { enable: true, value_area: 800 }
     },
-    color: { value: "#b44cff" },
+
+    color: { value: LIGHT },
+
     shape: { type: "circle" },
+
     opacity: {
-      value: 0.5,
+      value: 0.85,     // 🔥 higher visibility
       random: true
     },
+
     size: {
       value: 3,
       random: true
     },
+
     line_linked: {
       enable: true,
-      distance: 150,
-      color: "#b44cff",
-      opacity: 0.25,
+      distance: 140,
+      color: LIGHT,
+      opacity: 0.45,   // 🔥 more visible lines
       width: 1
     },
+
     move: {
       enable: true,
       speed: 1.2
     }
   },
+
   interactivity: {
     events: {
       onhover: { enable: true, mode: "grab" },
@@ -144,8 +151,10 @@ particlesJS("particles-js", {
       }
     }
   },
+
   retina_detect: true
 });
+
 
 import { doc, getDoc, updateDoc, increment } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -293,4 +302,5 @@ window.addEventListener("load", () => {
     updateParticles(isLight ? LIGHT : DARK);
   });
 });
+
 
