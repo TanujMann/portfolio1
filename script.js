@@ -286,9 +286,11 @@ window.addEventListener("load", () => {
 
   toggle.addEventListener("click", () => {
     const isLight =
-      document.documentElement.classList.toggle("light-mode");
+      document.body.classList.toggle("light-mode");
+
 
     icon.className = isLight ? "fas fa-moon" : "fas fa-sun";
     updateParticles(isLight ? LIGHT : DARK);
   });
 });
+
