@@ -104,56 +104,7 @@ window.closeProject = function(){
   document.getElementById("projectModal").style.display = "none";
 };
 
-particlesJS("particles-js", {
-  particles: {
-    number: {
-      value: 70,
-      density: { enable: true, value_area: 800 }
-    },
 
-    color: { value: LIGHT },
-
-    shape: { type: "circle" },
-
-    opacity: {
-      value: 0.85,     // 🔥 higher visibility
-      random: true
-    },
-
-    size: {
-      value: 3,
-      random: true
-    },
-
-    line_linked: {
-      enable: true,
-      distance: 140,
-      color: LIGHT,
-      opacity: 0.45,   // 🔥 more visible lines
-      width: 1
-    },
-
-    move: {
-      enable: true,
-      speed: 1.2
-    }
-  },
-
-  interactivity: {
-    events: {
-      onhover: { enable: true, mode: "grab" },
-      onclick: { enable: true, mode: "push" }
-    },
-    modes: {
-      grab: {
-        distance: 180,
-        line_linked: { opacity: 0.6 }
-      }
-    }
-  },
-
-  retina_detect: true
-});
 
 
 import { doc, getDoc, updateDoc, increment } 
@@ -277,30 +228,54 @@ document.addEventListener("DOMContentLoaded", () => {
 const DARK = "#b44cff";
 const LIGHT = "#2563eb";
 
-/* default light BEFORE paint already handled in <head> */
+function loadParticles(color) {
+  // 🔥 Destroy old instance if exists
+  if (window.pJSDom && pJSDom.length > 0) {
+    pJSDom[0].pJS.fn.vendors.destroypJS();
+    pJSDom = [];
+  }
 
-function updateParticles(color){
-  if (!window.pJSDom || !pJSDom[0]) return;
-  const p = pJSDom[0].pJS;
-  p.particles.color.value = color;
-  p.particles.line_linked.color = color;
-  p.fn.particlesRefresh();
-}
-
-window.addEventListener("load", () => {
-  updateParticles(LIGHT);
-
-  const toggle = document.getElementById("themeToggle");
-  const icon = toggle.querySelector("i");
-
-  toggle.addEventListener("click", () => {
-    const isLight =
-      document.body.classList.toggle("light-mode");
-
-
-    icon.className = isLight ? "fas fa-moon" : "fas fa-sun";
-    updateParticles(isLight ? LIGHT : DARK);
+  particlesJS("particles-js", {
+    particles: {
+      number: {
+        value: 70,
+        density: { enable: true, value_area: 800 }
+      },
+      color: { value: color },
+      shape: { type: "circle" },
+      opacity: {
+        value: 0.9,
+        random: true
+      },
+      size: {
+        value: 3,
+        random: true
+      },
+      line_linked: {
+        enable: true,
+        distance: 140,
+        color: color,
+        opacity: 0.45,
+        width: 1
+      },
+      move: {
+        enable: true,
+        speed: 1.2
+      }
+    },
+    interactivity: {
+      events: {
+        onhover: { enable: true, mode: "grab" },
+        onclick: { enable: true, mode: "push" }
+      },
+      modes: {
+        grab: {
+          distance: 180,
+          line_linked: { opacity: 0.6 }
+        }
+      }
+    },
+    retina_detect: true
   });
-});
-
+}
 
