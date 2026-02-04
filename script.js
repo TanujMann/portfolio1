@@ -278,4 +278,22 @@ function loadParticles(color) {
     retina_detect: true
   });
 }
+document.addEventListener("DOMContentLoaded", () => {
+  // 🌞 default light theme
+  document.body.classList.add("light-mode");
+
+  loadParticles(LIGHT);
+
+  const toggle = document.getElementById("themeToggle");
+  const icon = toggle.querySelector("i");
+
+  toggle.addEventListener("click", () => {
+    const isLight = document.body.classList.toggle("light-mode");
+    icon.className = isLight ? "fas fa-moon" : "fas fa-sun";
+
+    loadParticles(isLight ? LIGHT : DARK);
+  });
+});
+
+
 
