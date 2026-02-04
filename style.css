@@ -1840,6 +1840,12 @@ body.light-mode .resume-tooltip::after{
   filter: grayscale(100%) contrast(1.05);
   border-radius: 12px;
 }
+.hero-image{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 
 
