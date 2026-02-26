@@ -412,6 +412,15 @@ header, section { position:relative; z-index:2; }
   .project-modal-box { padding:20px 16px; }
 }
 
+/* Project tags in modal */
+.proj-tags { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:10px 0 4px; }
+.proj-tag { background:rgba(180,76,255,.12); border:1px solid rgba(180,76,255,.35); color:var(--accent); font-size:11px; padding:3px 11px; border-radius:20px; font-weight:600; }
+.project-links a { padding:9px 20px; border-radius:20px; border:1px solid var(--accent); color:var(--accent); text-decoration:none; transition:.3s; display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:600; }
+.project-links a:hover { background:rgba(180,76,255,.15); }
+.project-modal-box img { width:100%; border-radius:12px; margin-bottom:14px; max-height:240px; object-fit:cover; }
+.project-modal-box h3 { margin-bottom:8px; }
+.project-modal-box p { font-size:13px; color:#bbb; line-height:1.7; margin-bottom:4px; }
+
   </style>
 </head>
 <body>
@@ -917,6 +926,14 @@ window.linkedinPosts = [
 
 <script>
 // ╔══════════════════════════════════════════════════════════╗
+// ║              CODING PLATFORM USERNAMES                   ║
+// ╠══════════════════════════════════════════════════════════╣
+// ║  🔧 Set your usernames below to enable live stats       ║
+// ╚══════════════════════════════════════════════════════════╝
+const LEETCODE_USERNAME = "Tanuj1111";   // ← Your LeetCode username
+const GFG_USERNAME      = "tanujmann0026";   // ← Your GFG username
+
+// ╔══════════════════════════════════════════════════════════╗
 // ║              EMAILJS SETUP                               ║
 // ╚══════════════════════════════════════════════════════════╝
 // 🔧 Replace these with your EmailJS credentials:
@@ -1222,20 +1239,65 @@ window.closePopup = function () {
 // ║              PROJECT MODAL                               ║
 // ╚══════════════════════════════════════════════════════════╝
 const projects = {
-  1: { img: "zom.jpg", title: "Zomato Sales Dashboard",     desc: "Interactive Power BI dashboard analyzing Sales and Growth metrics.",              github: "https://github.com/TanujMann/Zomato-Dashboard", live: "https://app.powerbi.com/groups/me/reports/5445b57f-8c27-4e60-839c-f1a7d1e20638/51b3419bdb5b91c797d3?experience=power-bi" },
-  2: { img: "images/projects/health.png", title: "Health & Fitness Dashboard", desc: "Interactive Power BI dashboard analyzing lifestyle and health metrics.", github: "#", live: "#" },
-  3: { img: "images/projects/chatbot.png", title: "Order Tracking AI Bot",    desc: "AI-powered chatbot for tracking orders with real-time responses.",      github: "#", live: "#" }
+  1: { img: "zom.jpg", title: "Zomato Sales Dashboard",     desc: "Interactive Power BI dashboard analyzing Sales and Growth metrics for Zomato — including revenue trends, top-performing cities, peak order times, and best-selling cuisines.",              github: "https://github.com/TanujMann/Zomato-Dashboard", live: "https://app.powerbi.com/groups/me/reports/5445b57f-8c27-4e60-839c-f1a7d1e20638/51b3419bdb5b91c797d3?experience=power-bi", tech: ["Power BI", "DAX", "Data Analytics"] },
+  2: { img: "images/projects/health.png", title: "Health & Fitness Dashboard", desc: "Interactive Power BI dashboard analyzing lifestyle and health metrics including BMI trends, workout frequency, calorie intake, and sleep patterns — all in one interactive report.", github: "#", live: "#", tech: ["Power BI", "Data Visualization", "Health Analytics"] },
+  3: { img: "images/projects/chatbot.png", title: "Order Tracking AI Bot",    desc: "AI-powered conversational chatbot built with HTML, CSS & JavaScript that gives real-time order status updates. Handles multiple query types and responds naturally — no backend needed.", github: "#", live: "#", tech: ["HTML", "CSS", "JavaScript", "AI"] }
 };
 
 window.openProject = function (id) {
   const p = projects[id]; if (!p) return;
-  document.getElementById("projectModalImg").src       = p.img;
+
+  document.getElementById("projectModalImg").src         = p.img;
   document.getElementById("projectModalTitle").innerText = p.title;
   document.getElementById("projectModalDesc").innerText  = p.desc;
   document.getElementById("projectGithub").href          = p.github;
   document.getElementById("projectLive").href            = p.live;
-  document.getElementById("projectModal").style.display  = "flex";
+
+  // Show/hide github and live buttons based on availability
+  const ghBtn   = document.getElementById("projectGithub");
+  const liveBtn = document.getElementById("projectLive");
+  ghBtn.style.display   = (p.github && p.github !== "#") ? "inline-flex" : "none";
+  liveBtn.style.display = (p.live   && p.live   !== "#") ? "inline-flex" : "none";
+
+  // Render tech tags
+  const tagsEl = document.getElementById("projectModalTags");
+  if (tagsEl && p.tech) {
+    tagsEl.innerHTML = p.tech.map(t => `<span class="proj-tag">${t}</span>`).join("");
+  }
+
+  // Show modal
+  document.getElementById("projectModal").style.display = "flex";
+
+  // If there's a live demo, show the "Open Demo" button
+  const demoBtn = document.getElementById("projectDemoBtn");
+  if (demoBtn) {
+    demoBtn.style.display = (p.live && p.live !== "#") ? "inline-flex" : "none";
+    demoBtn.onclick = () => openLiveDemo(p.live, p.title);
+  }
 };
+
+window.openLiveDemo = function(url, title) {
+  // Close project modal first
+  document.getElementById("projectModal").style.display = "none";
+  // Open in a full-screen iframe overlay
+  const overlay = document.getElementById("demoOverlay");
+  const iframe  = document.getElementById("demoIframe");
+  const label   = document.getElementById("demoTitle");
+  const tabLink = document.getElementById("demoOpenTab");
+  if (!overlay || !iframe) return;
+  label.innerText   = title;
+  iframe.src        = url;
+  if (tabLink) tabLink.href = url;
+  overlay.style.display = "flex";
+};
+
+window.closeLiveDemo = function() {
+  const overlay = document.getElementById("demoOverlay");
+  const iframe  = document.getElementById("demoIframe");
+  if (overlay) overlay.style.display = "none";
+  if (iframe)  iframe.src = "";
+};
+
 window.closeProject = function () {
   document.getElementById("projectModal").style.display = "none";
 };
@@ -1458,11 +1520,25 @@ document.addEventListener("DOMContentLoaded", () => {
     <img id="projectModalImg"/>
     <h3 id="projectModalTitle"></h3>
     <p id="projectModalDesc"></p>
+    <div id="projectModalTags" class="proj-tags"></div>
     <div class="project-links">
-      <a id="projectGithub" target="_blank">GitHub</a>
-      <a id="projectLive" target="_blank">Live Demo</a>
+      <a id="projectGithub" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+      <a id="projectDemoBtn" onclick="return false;" style="cursor:pointer"><i class="fas fa-play-circle"></i> Open Demo</a>
+      <a id="projectLive" target="_blank"><i class="fas fa-external-link-alt"></i> Live Link</a>
     </div>
   </div>
+</div>
+
+<!-- LIVE DEMO OVERLAY -->
+<div id="demoOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:1100;flex-direction:column;">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:#0a0a0a;border-bottom:1px solid rgba(180,76,255,.3);">
+    <span style="color:var(--accent);font-weight:700;font-size:15px;" id="demoTitle">Live Demo</span>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <a id="demoOpenTab" href="#" target="_blank" style="color:#aaa;font-size:13px;text-decoration:none;padding:6px 14px;border:1px solid rgba(255,255,255,.2);border-radius:18px;transition:.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#aaa'"><i class="fas fa-external-link-alt"></i> Open in New Tab</a>
+      <button onclick="closeLiveDemo()" style="background:var(--accent);border:none;color:#000;width:32px;height:32px;border-radius:50%;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+  </div>
+  <iframe id="demoIframe" src="" style="flex:1;border:none;width:100%;background:#111;" allowfullscreen></iframe>
 </div>
 
 <div id="certModal" class="cert-modal">
