@@ -948,68 +948,94 @@ emailjs.init(EMAILJS_PUBLIC_KEY);
 const linkedinPosts = window.linkedinPosts;
 
 // ╔══════════════════════════════════════════════════════════╗
-// ║              LEETCODE AUTO-FETCH                         ║
-// ╠══════════════════════════════════════════════════════════╣
-// ║  Uses leetcode-stats-api.herokuapp.com — free, no auth  ║
+// ║   HARDCODED STATS (always works) + live fetch as bonus  ║
 // ╚══════════════════════════════════════════════════════════╝
+
+// ── Your REAL stats (from your LeetCode profile screenshot) ──
+const MY_LC_STATS = {
+  totalSolved: 74, easySolved: 42, mediumSolved: 31, hardSolved: 1,
+  totalEasy: 927, totalMedium: 2014, totalHard: 910, totalQuestions: 3851,
+  ranking: 1822857, acceptanceRate: null, contributionPoints: 0
+};
+// ── GFG stats — update manually from your GFG profile ──
+const MY_GFG_STATS = {
+  total: 0, school: 0, basic: 0, easy: 0, medium: 0, hard: 0,
+  streak: "0", score: "—", monthly: "—", rank: "—"
+};
+
 async function fetchLeetCode() {
   const username = LEETCODE_USERNAME.trim();
-  if (!username) { showLCError(); return; }
-
-  document.getElementById("lc-profile-link").href =
-    `https://leetcode.com/${username}`;
+  document.getElementById("lc-profile-link").href = `https://leetcode.com/${username}`;
   document.getElementById("lc-username-display").textContent = `@${username}`;
 
-  // Try primary API, fall back to secondary
-  const apis = [
-    `https://leetcode-stats-api.herokuapp.com/${username}`,
-    `https://leetcode-stats.tashif.codes/${username}`
-  ];
+  // Render hardcoded stats instantly so it always shows
+  renderLCStats(MY_LC_STATS);
 
-  let data = null;
-  for (const url of apis) {
-    try {
-      const res  = await fetch(url);
-      const json = await res.json();
-      if (json.status === "success" || json.totalSolved !== undefined) {
-        data = json; break;
-      }
-    } catch (_) { /* try next */ }
-  }
+  // Try live API in background (works when hosted on a real server)
+  try {
+    const query = {
+      query: `query userProfile($username: String!) {
+        matchedUser(username: $username) {
+          submitStats { acSubmissionNum { difficulty count } }
+          profile { ranking }
+          contributions { points }
+        }
+        allQuestionsCount { difficulty count }
+      }`,
+      variables: { username }
+    };
+    const res  = await fetch("https://leetcode.com/graphql", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Referer": "https://leetcode.com" },
+      body: JSON.stringify(query),
+      signal: AbortSignal.timeout(6000)
+    });
+    const json = await res.json();
+    const u  = json?.data?.matchedUser;
+    const aq = json?.data?.allQuestionsCount;
+    if (u && u.submitStats) {
+      const ac = u.submitStats.acSubmissionNum;
+      const getCount = d => ac.find(x => x.difficulty === d)?.count || 0;
+      const getTotal = d => aq?.find(x => x.difficulty === d)?.count || 1;
+      renderLCStats({
+        totalSolved: getCount("All"), easySolved: getCount("Easy"),
+        mediumSolved: getCount("Medium"), hardSolved: getCount("Hard"),
+        totalEasy: getTotal("Easy"), totalMedium: getTotal("Medium"),
+        totalHard: getTotal("Hard"), totalQuestions: getTotal("All"),
+        ranking: u.profile?.ranking || 0,
+        contributionPoints: u.contributions?.points || 0,
+        acceptanceRate: null
+      });
+    }
+  } catch (_) { /* keep showing hardcoded stats */ }
+}
 
-  if (!data) { showLCError(); return; }
-
-  // Hide loader, show data
+function renderLCStats(data) {
   document.getElementById("lc-loading").style.display = "none";
   document.getElementById("lc-data").style.display    = "flex";
   document.getElementById("lc-meta").style.display    = "flex";
 
-  const total  = data.totalSolved     || 0;
-  const easy   = data.easySolved      || 0;
-  const med    = data.mediumSolved    || 0;
-  const hard   = data.hardSolved      || 0;
-  const tEasy  = data.totalEasy       || 458;
-  const tMed   = data.totalMedium     || 904;
-  const tHard  = data.totalHard       || 368;
-  const tAll   = data.totalQuestions  || 1730;
+  const total = data.totalSolved  || 0;
+  const easy  = data.easySolved   || 0;
+  const med   = data.mediumSolved || 0;
+  const hard  = data.hardSolved   || 0;
+  const tEasy = data.totalEasy    || 927;
+  const tMed  = data.totalMedium  || 2014;
+  const tHard = data.totalHard    || 910;
+  const tAll  = data.totalQuestions || 3851;
 
-  // Animate numbers
   animateNum("lc-total", total);
   animateNum("lc-easy",  easy);
   animateNum("lc-med",   med);
   animateNum("lc-hard",  hard);
 
-  // Ranking
   document.getElementById("lc-ranking").textContent =
     data.ranking ? `#${Number(data.ranking).toLocaleString()}` : "—";
-
-  // Acceptance & contribution
   document.getElementById("lc-acceptance").textContent =
-    data.acceptanceRate ? data.acceptanceRate.toFixed(1) : "—";
+    data.acceptanceRate ? Number(data.acceptanceRate).toFixed(1) : "—";
   document.getElementById("lc-contrib").textContent =
     data.contributionPoints ? Number(data.contributionPoints).toLocaleString() : "—";
 
-  // Progress bars (animate after short delay)
   setTimeout(() => {
     setBar("lc-easy-bar",  easy / tEasy  * 100);
     setBar("lc-med-bar",   med  / tMed   * 100);
@@ -1023,82 +1049,63 @@ function showLCError() {
   document.getElementById("lc-error").style.display   = "block";
 }
 
-// ╔══════════════════════════════════════════════════════════╗
-// ║           GEEKSFORGEEKS AUTO-FETCH                       ║
-// ╠══════════════════════════════════════════════════════════╣
-// ║  Uses gfg-stats.tashif.codes — free, no auth            ║
-// ╚══════════════════════════════════════════════════════════╝
 async function fetchGFG() {
   const username = GFG_USERNAME.trim();
-  if (!username) { showGFGError(); return; }
-
-  document.getElementById("gfg-profile-link").href =
-    `https://auth.geeksforgeeks.org/user/${username}`;
+  document.getElementById("gfg-profile-link").href = `https://auth.geeksforgeeks.org/user/${username}`;
   document.getElementById("gfg-username-display").textContent = `@${username}`;
 
-  // Try multiple GFG APIs
-  const apis = [
-    `https://gfg-stats.tashif.codes/${username}`,
-    `https://gfg-api-fefa.onrender.com/${username}`,
-    `https://coding-platform-profile-api.onrender.com/geeksforgeeks/${username}/`
-  ];
+  // Render hardcoded GFG stats instantly
+  renderGFGStats(MY_GFG_STATS);
 
-  let data = null;
-  for (const url of apis) {
-    try {
-      const res  = await fetch(url, { signal: AbortSignal.timeout(8000) });
-      const json = await res.json();
-      // Different APIs return different shapes — normalise below
-      if (json.totalProblemsSolved !== undefined || json.info !== undefined) {
-        data = json; break;
-      }
-    } catch (_) { /* try next */ }
-  }
+  // Try live API in background
+  try {
+    const res  = await fetch(`https://geeks-for-geeks-stats-api.vercel.app/?raw=Y&userName=${username}`, {
+      signal: AbortSignal.timeout(8000)
+    });
+    const json = await res.json();
+    if (json && !json.error) {
+      const info   = json.info || json;
+      const solved = json.problemsByDifficulty || json.solvedStats || {};
+      renderGFGStats({
+        total:  parseInt(info.totalProblemsSolved || json.totalProblemsSolved || 0),
+        school: parseInt(solved.school?.count ?? solved.school ?? 0),
+        basic:  parseInt(solved.basic?.count  ?? solved.basic  ?? 0),
+        easy:   parseInt(solved.easy?.count   ?? solved.easy   ?? 0),
+        medium: parseInt(solved.medium?.count ?? solved.medium ?? 0),
+        hard:   parseInt(solved.hard?.count   ?? solved.hard   ?? 0),
+        streak: info.currentStreak || "0",
+        score:  info.codingScore || "—",
+        monthly:info.monthlyCodingScore || "—",
+        rank:   info.instituteRank || "—"
+      });
+    }
+  } catch (_) { /* keep showing hardcoded */ }
+}
 
-  if (!data) { showGFGError(); return; }
-
-  // Normalise across API shapes
-  const info   = data.info || data;
-  const solved = data.problemsByDifficulty || data.solvedStats || {};
-
-  const total   = parseInt(info.totalProblemsSolved  || info.total_problems_solved || 0);
-  const school  = parseInt(solved.school?.count  ?? solved.school  ?? 0);
-  const basic   = parseInt(solved.basic?.count   ?? solved.basic   ?? 0);
-  const easy    = parseInt(solved.easy?.count    ?? solved.easy    ?? 0);
-  const med     = parseInt(solved.medium?.count  ?? solved.medium  ?? 0);
-  const hard    = parseInt(solved.hard?.count    ?? solved.hard    ?? 0);
-  const streak  = info.currentStreak || info.streak || "0";
-  const score   = info.codingScore   || info.overallScore || "—";
-  const monthly = info.monthlyCodingScore || info.monthlyScore || "—";
-  const rank    = info.instituteRank || info.rank || "—";
-
-  // Hide loader, show data
+function renderGFGStats(d) {
   document.getElementById("gfg-loading").style.display = "none";
   document.getElementById("gfg-data").style.display    = "flex";
   document.getElementById("gfg-meta").style.display    = "flex";
 
-  document.getElementById("gfg-ranking").textContent = rank !== "—" ? `#${rank}` : "—";
+  document.getElementById("gfg-ranking").textContent = d.rank && d.rank !== "—" ? `#${d.rank}` : "—";
+  animateNum("gfg-total",  d.total  || 0);
+  animateNum("gfg-school", d.school || 0);
+  animateNum("gfg-basic",  d.basic  || 0);
+  animateNum("gfg-easy",   d.easy   || 0);
+  animateNum("gfg-med",    d.medium || 0);
+  animateNum("gfg-hard",   d.hard   || 0);
+  document.getElementById("gfg-streak").textContent  = d.streak  || "0";
+  document.getElementById("gfg-score").textContent   = d.score   || "—";
+  document.getElementById("gfg-monthly").textContent = d.monthly || "—";
 
-  animateNum("gfg-total",  total);
-  animateNum("gfg-school", school);
-  animateNum("gfg-basic",  basic);
-  animateNum("gfg-easy",   easy);
-  animateNum("gfg-med",    med);
-  animateNum("gfg-hard",   hard);
-
-  document.getElementById("gfg-streak").textContent  = streak;
-  document.getElementById("gfg-score").textContent   = score;
-  document.getElementById("gfg-monthly").textContent = monthly;
-
-  // Bars (relative to total)
-  const T = total || 1;
+  const T = d.total || 1;
   setTimeout(() => {
-    setBar("gfg-school-bar", school / T * 100);
-    setBar("gfg-basic-bar",  basic  / T * 100);
-    setBar("gfg-easy-bar",   easy   / T * 100);
-    setBar("gfg-med-bar",    med    / T * 100);
-    setBar("gfg-hard-bar",   hard   / T * 100);
-    setCircle("gfg-circle-progress", Math.min(total / 500, 1));
+    setBar("gfg-school-bar", d.school / T * 100);
+    setBar("gfg-basic-bar",  d.basic  / T * 100);
+    setBar("gfg-easy-bar",   d.easy   / T * 100);
+    setBar("gfg-med-bar",    d.medium / T * 100);
+    setBar("gfg-hard-bar",   d.hard   / T * 100);
+    setCircle("gfg-circle-progress", Math.min((d.total||0) / 500, 1));
   }, 300);
 }
 
@@ -1106,6 +1113,7 @@ function showGFGError() {
   document.getElementById("gfg-loading").style.display = "none";
   document.getElementById("gfg-error").style.display   = "block";
 }
+
 
 // ── Helpers ──────────────────────────────────────────────
 function animateNum(id, target) {
