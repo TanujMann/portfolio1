@@ -1175,8 +1175,10 @@ function renderLinkedInPosts() {
 // ╔══════════════════════════════════════════════════════════╗
 // ║              CONTACT FORM — EmailJS                      ║
 // ╚══════════════════════════════════════════════════════════╝
+document.addEventListener("DOMContentLoaded", function() {
 const form  = document.getElementById("contactForm");
 const popup = document.getElementById("thankyouPopup");
+if (!form) return;
 
 form.addEventListener("submit", function(e) {
   e.preventDefault();
@@ -1224,7 +1226,13 @@ function showFormError(msg) {
   setTimeout(function() { if(el) el.style.display = "none"; }, 8000);
 }
 
-/* ── Hamburger Nav ── */
+window.closePopup = function () {
+  var p = document.getElementById("thankyouPopup");
+  if (p) p.style.display = "none";
+  document.getElementById("home").scrollIntoView({ behavior: "smooth" });
+};
+
+}); // end DOMContentLoaded
 function toggleNavDrawer() {
   var d = document.getElementById('navDrawer');
   var h = document.getElementById('navHamburger');
@@ -1237,11 +1245,6 @@ function closeNavDrawer() {
   document.getElementById('navHamburger').classList.remove('open');
   document.body.style.overflow = '';
 }
-
-window.closePopup = function () {
-  popup.style.display = "none";
-  document.getElementById("home").scrollIntoView({ behavior: "smooth" });
-};
 
 // ╔══════════════════════════════════════════════════════════╗
 // ║              PROJECT MODAL                               ║
