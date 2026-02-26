@@ -9,6 +9,7 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
 /* ═══════════════════════════════════════ ROOT ═══════ */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; font-family:'Montserrat',sans-serif; }
@@ -914,28 +915,20 @@ window.linkedinPosts = [
 ];
 </script>
 
-<script type="module">
-// LinkedIn posts also available inside the module
-const linkedinPosts = window.linkedinPosts;
-
+<script>
 // ╔══════════════════════════════════════════════════════════╗
-// ║              FIREBASE SETUP                              ║
+// ║              EMAILJS SETUP                               ║
 // ╚══════════════════════════════════════════════════════════╝
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, addDoc, collection, doc, getDoc, updateDoc, increment }
-  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// 🔧 Replace these with your EmailJS credentials:
+//    https://www.emailjs.com → Account → API Keys
+const EMAILJS_PUBLIC_KEY  = "l-COvx_E1XhaPifF4";   // e.g. "user_xxxxxxxxxxxx"
+const EMAILJS_SERVICE_ID  = "service_0026";   // e.g. "service_xxxxxxx"
+const EMAILJS_TEMPLATE_ID = "template_hssc3xr";  // e.g. "template_xxxxxxx"
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCkJ_vWxWNVIhbjpb7dI6TpKXWb-sExn7s",
-  authDomain: "tanuj-portfolio-655ac.firebaseapp.com",
-  projectId: "tanuj-portfolio-655ac",
-  storageBucket: "tanuj-portfolio-655ac.firebasestorage.app",
-  messagingSenderId: "867101386902",
-  appId: "1:867101386902:web:2aaefd94f1f653f5507ab7"
-};
+emailjs.init(EMAILJS_PUBLIC_KEY);
 
-const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+// LinkedIn posts reference (defined globally in plain script above)
+const linkedinPosts = window.linkedinPosts;
 
 // ╔══════════════════════════════════════════════════════════╗
 // ║              LEETCODE AUTO-FETCH                         ║
@@ -1155,28 +1148,56 @@ function renderLinkedInPosts() {
 }
 
 // ╔══════════════════════════════════════════════════════════╗
-// ║              CONTACT FORM                                ║
+// ║              CONTACT FORM — EmailJS                      ║
 // ╚══════════════════════════════════════════════════════════╝
 const form  = document.getElementById("contactForm");
 const popup = document.getElementById("thankyouPopup");
 
-form.addEventListener("submit", async (e) => {
+form.addEventListener("submit", function(e) {
   e.preventDefault();
-  try {
-    await addDoc(collection(db, "messages"), {
-      name:      document.getElementById("name").value,
-      email:     document.getElementById("email").value,
-      phone:     document.getElementById("phone").value,
-      message:   document.getElementById("message").value,
-      createdAt: new Date()
+  const btn      = form.querySelector("button[type='submit']");
+  const origText = btn.textContent;
+
+  btn.textContent = "Sending...";
+  btn.disabled    = true;
+  btn.style.opacity = "0.7";
+
+  const templateParams = {
+    from_name:    document.getElementById("name").value,
+    from_email:   document.getElementById("email").value,
+    phone:        document.getElementById("phone").value,
+    message:      document.getElementById("message").value,
+    to_name:      "Tanuj Mann"
+  };
+
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+    .then(function() {
+      popup.style.display = "flex";
+      form.reset();
+    })
+    .catch(function(err) {
+      console.error("EmailJS error:", err);
+      showFormError("Failed to send message. Please check your EmailJS credentials or try again.");
+    })
+    .finally(function() {
+      btn.textContent   = origText;
+      btn.disabled      = false;
+      btn.style.opacity = "1";
     });
-    popup.style.display = "flex";
-    form.reset();
-  } catch (err) {
-    console.error("Firestore error:", err);
-    alert("Error sending message. Please try again.");
-  }
 });
+
+function showFormError(msg) {
+  var el = document.getElementById("formErrorMsg");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "formErrorMsg";
+    el.style.cssText = "margin-top:12px;padding:12px 16px;background:rgba(255,80,80,0.12);border:1px solid rgba(255,80,80,0.4);border-radius:10px;color:#ff6b6b;font-size:13px;line-height:1.6;text-align:left;";
+    form.appendChild(el);
+  }
+  el.innerHTML = "<strong>⚠ </strong>" + msg;
+  el.style.display = "block";
+  setTimeout(function() { if(el) el.style.display = "none"; }, 8000);
+}
 
 /* ── Hamburger Nav ── */
 function toggleNavDrawer() {
@@ -1250,31 +1271,31 @@ window.addEventListener("click", e => {
 });
 
 // ╔══════════════════════════════════════════════════════════╗
-// ║              RESUME TRACKER                              ║
+// ║              RESUME TRACKER — localStorage               ║
 // ╚══════════════════════════════════════════════════════════╝
 const resumeBtn = document.getElementById("resumeBtn");
 const badge     = document.getElementById("downloadCount");
 const tooltip   = document.getElementById("resumeTooltip");
 let resumeLocked = false;
 
-async function loadResumeCount() {
-  try {
-    const snap = await getDoc(doc(db, "resume_stats", "count"));
-    if (snap.exists()) {
-      const n = snap.data().downloads;
-      badge.innerText   = n;
-      tooltip.innerText = `Downloaded ${n} times`;
-    }
-  } catch (_) {}
+function loadResumeCount() {
+  var n = parseInt(localStorage.getItem("resumeDownloads") || "0");
+  badge.innerText   = n;
+  tooltip.innerText = "Downloaded " + n + " times";
 }
 loadResumeCount();
 
-window.trackResume = async function (e) {
-  if (resumeLocked) { e.preventDefault(); return; }
+window.trackResume = function(e) {
+  if (resumeLocked) return;
   resumeLocked = true;
   resumeBtn.style.opacity = "0.6";
-  try { await updateDoc(doc(db,"resume_stats","count"), { downloads: increment(1) }); } catch(_){}
-  setTimeout(() => { resumeLocked = false; resumeBtn.style.opacity = "1"; loadResumeCount(); }, 3000);
+  var n = parseInt(localStorage.getItem("resumeDownloads") || "0") + 1;
+  localStorage.setItem("resumeDownloads", n);
+  setTimeout(function() {
+    resumeLocked = false;
+    resumeBtn.style.opacity = "1";
+    loadResumeCount();
+  }, 1500);
 };
 
 // ╔══════════════════════════════════════════════════════════╗
@@ -1380,5 +1401,77 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </script>
 
-</body>
-</html>
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-container">
+    <div class="about-profile">
+      <div class="profile-ring">
+        <img id="aboutProfileImage" src="profile1.jpg" alt="Tanuj Mann"/>
+      </div>
+    </div>
+    <div class="about-content">
+      <h2>ABOUT <span>ME</span></h2>
+      <p>I am a passionate <span>Data Scientist</span> and <span>Machine Learning</span> enthusiast with a strong interest in extracting insights from data and building intelligent systems.</p>
+      <p>Along with my technical background, I also have creative skills in <span>Video Editing</span> and <span>Canva Designing</span>, which help me present information in a visually engaging way.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-container">
+    <div class="contact-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+    <h2>CONTACT <span>ME</span></h2>
+    <form id="contactForm" class="contact-form">
+      <input type="text" id="name" placeholder="Your Name" required>
+      <input type="email" id="email" placeholder="Your Email" required>
+      <input type="tel" id="phone" placeholder="Your Contact Number">
+      <textarea id="message" placeholder="Your Message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+    <div class="contact-cta">
+      <a href="/cdn-cgi/l/email-protection#790d18170c1314181717391c14181015571a1614" class="cta-card" target="_blank"><i class="fas fa-envelope"></i><span>Email</span></a>
+      <a href="https://wa.me/918199000712?text=Hi%20Tanuj" class="cta-card whatsapp" target="_blank"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></a>
+      <a href="https://www.linkedin.com/in/tanuj-mann-a8042b297/" class="cta-card" target="_blank"><i class="fab fa-linkedin-in"></i><span>LinkedIn</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- CURSOR GLOW -->
+<div class="cursor-glow"></div>
+
+<!-- EASTER EGG -->
+<div id="easter-egg">🤖 ML Master Mode Activated!</div>
+
+<!-- POPUPS -->
+<div class="thankyou-popup" id="thankyouPopup">
+  <div class="popup-box">
+    <h3>Thank You ✨</h3>
+    <p>We will reach out to you soon.</p>
+    <button type="button" onclick="closePopup()">Close</button>
+  </div>
+</div>
+
+<div id="projectModal" class="project-modal">
+  <div class="project-modal-box">
+    <button class="project-close" onclick="closeProject()">✕</button>
+    <img id="projectModalImg"/>
+    <h3 id="projectModalTitle"></h3>
+    <p id="projectModalDesc"></p>
+    <div class="project-links">
+      <a id="projectGithub" target="_blank">GitHub</a>
+      <a id="projectLive" target="_blank">Live Demo</a>
+    </div>
+  </div>
+</div>
+
+<div id="certModal" class="cert-modal">
+  <div class="cert-modal-box">
+    <button class="cert-modal-close" onclick="closeCert()">✕</button>
+    <div class="cert-modal-icon"><i id="certModalIcon" class="fas fa-certificate"></i></div>
+    <h3 id="certModalTitle"></h3>
+    <p class="cert-modal-issuer" id="certModalIssuer"></p>
+    <p class="cert-modal-date" id="certModalDate"></p>
+    <p class="cert-modal-desc" id="certModalDesc"></p>
+    <div class="cert-modal-tags" id="certModalTags"></div>
+    <a id="certModalLink" href="#" target="_blank" class="cert-modal-btn">View Certif
