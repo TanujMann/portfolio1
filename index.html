@@ -578,7 +578,7 @@ header, section { position:relative; z-index:2; }
         </div>
 
         <div class="platform-card-footer">
-          <a id="lc-profile-link" href="#" target="_blank" class="platform-visit-btn lc-btn">
+          <a id="lc-profile-link" href="https://leetcode.com/Tanuj1111" target="_blank" class="platform-visit-btn lc-btn">
             <i class="fas fa-external-link-alt"></i> View on LeetCode
           </a>
         </div>
@@ -645,7 +645,7 @@ header, section { position:relative; z-index:2; }
         </div>
 
         <div class="platform-card-footer">
-          <a id="gfg-profile-link" href="#" target="_blank" class="platform-visit-btn gfg-btn">
+          <a id="gfg-profile-link" href="https://auth.geeksforgeeks.org/user/tanujmann0026" target="_blank" class="platform-visit-btn gfg-btn">
             <i class="fas fa-external-link-alt"></i> View on GFG
           </a>
         </div>
@@ -956,7 +956,7 @@ const linkedinPosts = window.linkedinPosts;
 const MY_LC_STATS = {
   totalSolved: 74, easySolved: 42, mediumSolved: 31, hardSolved: 1,
   totalEasy: 927, totalMedium: 2014, totalHard: 910, totalQuestions: 3851,
-  ranking: 1822857, acceptanceRate: null, contributionPoints: 0
+  ranking: 1822857, acceptanceRate: 56.3, contributionPoints: 0
 };
 // ── GFG stats — update manually from your GFG profile ──
 const MY_GFG_STATS = {
@@ -1012,9 +1012,13 @@ async function fetchLeetCode() {
 }
 
 function renderLCStats(data) {
-  document.getElementById("lc-loading").style.display = "none";
-  document.getElementById("lc-data").style.display    = "flex";
-  document.getElementById("lc-meta").style.display    = "flex";
+  const safeEl = id => document.getElementById(id);
+  const safeSet = (id, val) => { const el = safeEl(id); if (el) el.textContent = val; };
+  const safeStyle = (id, prop, val) => { const el = safeEl(id); if (el) el.style[prop] = val; };
+
+  safeStyle("lc-loading", "display", "none");
+  safeStyle("lc-data",    "display", "flex");
+  safeStyle("lc-meta",    "display", "flex");
 
   const total = data.totalSolved  || 0;
   const easy  = data.easySolved   || 0;
@@ -1030,12 +1034,9 @@ function renderLCStats(data) {
   animateNum("lc-med",   med);
   animateNum("lc-hard",  hard);
 
-  document.getElementById("lc-ranking").textContent =
-    data.ranking ? `#${Number(data.ranking).toLocaleString()}` : "—";
-  document.getElementById("lc-acceptance").textContent =
-    data.acceptanceRate ? Number(data.acceptanceRate).toFixed(1) : "—";
-  document.getElementById("lc-contrib").textContent =
-    data.contributionPoints ? Number(data.contributionPoints).toLocaleString() : "—";
+  safeSet("lc-ranking",    data.ranking    ? `#${Number(data.ranking).toLocaleString()}` : "—");
+  safeSet("lc-acceptance", data.acceptanceRate ? Number(data.acceptanceRate).toFixed(1) : "—");
+  safeSet("lc-contrib",    data.contributionPoints ? Number(data.contributionPoints).toLocaleString() : "—");
 
   setTimeout(() => {
     setBar("lc-easy-bar",  easy / tEasy  * 100);
@@ -1052,60 +1053,83 @@ function showLCError() {
 
 async function fetchGFG() {
   const username = GFG_USERNAME.trim();
-  document.getElementById("gfg-profile-link").href = `https://auth.geeksforgeeks.org/user/${username}`;
-  document.getElementById("gfg-username-display").textContent = `@${username}`;
+  const safeEl   = id => document.getElementById(id);
+  const linkEl   = safeEl("gfg-profile-link");
+  const userEl   = safeEl("gfg-username-display");
+  if (linkEl) linkEl.href = `https://auth.geeksforgeeks.org/user/${username}`;
+  if (userEl) userEl.textContent = `@${username}`;
 
-  // Render hardcoded GFG stats instantly
+  // Always render hardcoded stats first (instant, no loading)
   renderGFGStats(MY_GFG_STATS);
 
-  // Try live API in background
-  try {
-    const res  = await fetch(`https://geeks-for-geeks-stats-api.vercel.app/?raw=Y&userName=${username}`, {
-      signal: AbortSignal.timeout(8000)
-    });
-    const json = await res.json();
-    if (json && !json.error) {
-      const info   = json.info || json;
-      const solved = json.problemsByDifficulty || json.solvedStats || {};
+  // Try multiple live APIs in background
+  const apiUrls = [
+    `https://gfgstatsapi.vercel.app/api/${username}`,
+    `https://gfg-api.onrender.com/api/user/${username}`,
+    `https://geeks-for-geeks-stats-api.vercel.app/?raw=Y&userName=${username}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(`https://gfg-stats.tashif.codes/${username}`)}`
+  ];
+
+  for (const url of apiUrls) {
+    try {
+      const res  = await fetch(url, { signal: AbortSignal.timeout(5000) });
+      if (!res.ok) continue;
+      const json = await res.json();
+
+      // Handle allorigins wrapper
+      const raw = json.contents ? JSON.parse(json.contents) : json;
+      if (!raw || raw.error || raw.message === "User not found") continue;
+
+      const info   = raw.info || raw.data || raw;
+      const solved = raw.problemsByDifficulty || raw.solvedStats || raw.problemsSolved || {};
+
+      const total  = parseInt(info.totalProblemsSolved || info.total || raw.totalProblemsSolved || 0);
+      if (total === 0 && !info.codingScore) continue; // skip empty responses
+
       renderGFGStats({
-        total:  parseInt(info.totalProblemsSolved || json.totalProblemsSolved || 0),
+        total,
         school: parseInt(solved.school?.count ?? solved.school ?? 0),
         basic:  parseInt(solved.basic?.count  ?? solved.basic  ?? 0),
         easy:   parseInt(solved.easy?.count   ?? solved.easy   ?? 0),
         medium: parseInt(solved.medium?.count ?? solved.medium ?? 0),
         hard:   parseInt(solved.hard?.count   ?? solved.hard   ?? 0),
-        streak: info.currentStreak || "0",
-        score:  info.codingScore || "—",
+        streak: info.currentStreak || info.streak || "0",
+        score:  info.codingScore   || info.score  || "—",
         monthly:info.monthlyCodingScore || "—",
-        rank:   info.instituteRank || "—"
+        rank:   info.instituteRank || info.rank   || "—"
       });
-    }
-  } catch (_) { /* keep showing hardcoded */ }
+      break; // success — stop trying other APIs
+    } catch (_) { /* try next */ }
+  }
 }
 
 function renderGFGStats(d) {
-  document.getElementById("gfg-loading").style.display = "none";
-  document.getElementById("gfg-data").style.display    = "flex";
-  document.getElementById("gfg-meta").style.display    = "flex";
+  const safeEl    = id => document.getElementById(id);
+  const safeSet   = (id, val) => { const el = safeEl(id); if (el) el.textContent = val; };
+  const safeStyle = (id, prop, val) => { const el = safeEl(id); if (el) el.style[prop] = val; };
 
-  document.getElementById("gfg-ranking").textContent = d.rank && d.rank !== "—" ? `#${d.rank}` : "—";
+  safeStyle("gfg-loading", "display", "none");
+  safeStyle("gfg-data",    "display", "flex");
+  safeStyle("gfg-meta",    "display", "flex");
+
+  safeSet("gfg-ranking", d.rank && d.rank !== "—" ? `#${d.rank}` : "—");
   animateNum("gfg-total",  d.total  || 0);
   animateNum("gfg-school", d.school || 0);
   animateNum("gfg-basic",  d.basic  || 0);
   animateNum("gfg-easy",   d.easy   || 0);
   animateNum("gfg-med",    d.medium || 0);
   animateNum("gfg-hard",   d.hard   || 0);
-  document.getElementById("gfg-streak").textContent  = d.streak  || "0";
-  document.getElementById("gfg-score").textContent   = d.score   || "—";
-  document.getElementById("gfg-monthly").textContent = d.monthly || "—";
+  safeSet("gfg-streak",  d.streak  || "0");
+  safeSet("gfg-score",   d.score   || "—");
+  safeSet("gfg-monthly", d.monthly || "—");
 
   const T = d.total || 1;
   setTimeout(() => {
-    setBar("gfg-school-bar", d.school / T * 100);
-    setBar("gfg-basic-bar",  d.basic  / T * 100);
-    setBar("gfg-easy-bar",   d.easy   / T * 100);
-    setBar("gfg-med-bar",    d.medium / T * 100);
-    setBar("gfg-hard-bar",   d.hard   / T * 100);
+    setBar("gfg-school-bar", (d.school||0) / T * 100);
+    setBar("gfg-basic-bar",  (d.basic ||0) / T * 100);
+    setBar("gfg-easy-bar",   (d.easy  ||0) / T * 100);
+    setBar("gfg-med-bar",    (d.medium||0) / T * 100);
+    setBar("gfg-hard-bar",   (d.hard  ||0) / T * 100);
     setCircle("gfg-circle-progress", Math.min((d.total||0) / 500, 1));
   }, 300);
 }
