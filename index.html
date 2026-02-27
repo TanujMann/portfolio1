@@ -9,6 +9,16 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.1/css/all.css" crossorigin="anonymous">
+  <style>
+  /* SVG fallback icons in case Font Awesome fails to load */
+  .fa-instagram::before  { content: none; }
+  .fa-linkedin-in::before{ content: none; }
+  .fa-github::before     { content: none; }
+  .fa-envelope::before   { content: none; }
+  .fa-whatsapp::before   { content: none; }
+  .social-icon-svg { width:22px; height:22px; fill:currentColor; display:block; }
+  </style>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <style>
@@ -422,6 +432,213 @@ header, section { position:relative; z-index:2; }
 .project-modal-box h3 { margin-bottom:8px; }
 .project-modal-box p { font-size:13px; color:#bbb; line-height:1.7; margin-bottom:4px; }
 
+/* ═══════════════════════════════════════ MOBILE STABILITY ══ */
+/* Prevent layout jumping on mobile */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Reserve space for images so page doesn't jump when they load */
+.hero-image img {
+  min-height: 200px;
+}
+
+/* Disable animations on mobile to prevent layout jumping */
+@media (max-width: 768px) {
+  /* Stop hero slide animation causing reflow */
+  .hero-content {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Stop bounce animation on resume button */
+  .resume-btn:hover {
+    animation: none !important;
+  }
+
+  /* Fix touch scroll jumping — use passive scroll */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent content shifting from hover transforms on mobile */
+  .skill-card:hover,
+  .project-card:hover,
+  .cert-card:hover {
+    transform: none !important;
+    box-shadow: 0 0 15px rgba(180,76,255,.5) !important;
+  }
+
+  /* Fix platform cards not causing reflow */
+  .platform-card {
+    min-height: 320px;
+  }
+
+  /* Prevent status dot pulse from causing reflow */
+  .status-dot {
+    animation: none;
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  /* Fix cursor glow causing scroll issues */
+  .cursor-glow {
+    display: none !important;
+  }
+
+  /* Stable navbar — prevent height changes */
+  .navbar {
+    height: 60px;
+    min-height: 60px;
+  }
+
+  /* Prevent particles from causing layout shifts */
+  #particles-js {
+    position: fixed !important;
+  }
+
+  /* Stable section heights */
+  section {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* Fix meta chips wrapping causing height jump */
+  .platform-meta {
+    min-height: 48px;
+    flex-wrap: wrap;
+  }
+
+  /* Prevent font loading flash */
+  body {
+    font-display: swap;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small screens — disable all hover transforms */
+  *:hover {
+    transform: none !important;
+  }
+
+  /* Stable card heights */
+  .skill-card,
+  .cert-card,
+  .project-card {
+    transform: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════ SCROLL REVEAL ══ */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(.25,.8,.25,1), transform 0.7s cubic-bezier(.25,.8,.25,1);
+  will-change: opacity, transform;
+}
+.reveal.reveal-left  { transform: translateX(-50px); }
+.reveal.reveal-right { transform: translateX(50px); }
+.reveal.reveal-scale { transform: scale(0.88); }
+.reveal.visible {
+  opacity: 1 !important;
+  transform: none !important;
+}
+/* Stagger delay for grid children */
+.reveal-group .skill-card:nth-child(1)  { transition-delay: 0.05s; }
+.reveal-group .skill-card:nth-child(2)  { transition-delay: 0.10s; }
+.reveal-group .skill-card:nth-child(3)  { transition-delay: 0.15s; }
+.reveal-group .skill-card:nth-child(4)  { transition-delay: 0.20s; }
+.reveal-group .skill-card:nth-child(5)  { transition-delay: 0.25s; }
+.reveal-group .skill-card:nth-child(6)  { transition-delay: 0.30s; }
+.reveal-group .skill-card:nth-child(7)  { transition-delay: 0.35s; }
+.reveal-group .skill-card:nth-child(8)  { transition-delay: 0.40s; }
+.reveal-group .project-card:nth-child(1){ transition-delay: 0.05s; }
+.reveal-group .project-card:nth-child(2){ transition-delay: 0.15s; }
+.reveal-group .project-card:nth-child(3){ transition-delay: 0.25s; }
+.reveal-group .cert-card:nth-child(1)   { transition-delay: 0.05s; }
+.reveal-group .cert-card:nth-child(2)   { transition-delay: 0.12s; }
+.reveal-group .cert-card:nth-child(3)   { transition-delay: 0.19s; }
+.reveal-group .cert-card:nth-child(4)   { transition-delay: 0.26s; }
+
+/* ═══════════════════════════════════════ STATS COUNTER ══ */
+.stats-counter-section {
+  padding: 60px 80px;
+  position: relative;
+  z-index: 2;
+}
+.stats-counter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.stat-counter-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: .3s;
+}
+.stat-counter-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(180,76,255,.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.stat-counter-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 25px rgba(180,76,255,.6), 0 0 55px rgba(180,76,255,.25);
+  border-color: var(--accent);
+}
+.stat-counter-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: rgba(180,76,255,.12);
+  border: 1px solid rgba(180,76,255,.3);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 22px;
+}
+.stat-counter-num {
+  font-size: 42px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.stat-counter-num .stat-suffix {
+  font-size: 26px;
+  font-weight: 700;
+}
+.stat-counter-label {
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: .5px;
+}
+.stat-counter-sub {
+  font-size: 11px;
+  color: rgba(180,76,255,.7);
+  margin-top: 5px;
+  font-weight: 600;
+}
+@media (max-width: 768px) {
+  .stats-counter-section { padding: 40px 20px; }
+  .stats-counter-grid { grid-template-columns: repeat(2,1fr); gap: 16px; }
+  .stat-counter-num { font-size: 32px; }
+}
+@media (max-width: 480px) {
+  .stats-counter-grid { grid-template-columns: repeat(2,1fr); gap: 12px; }
+  .stat-counter-card { padding: 22px 14px; }
+}
+
   </style>
 </head>
 <body>
@@ -432,8 +649,8 @@ header, section { position:relative; z-index:2; }
 <div class="nav-drawer" id="navDrawer">
   <button class="nav-drawer-close" onclick="closeNavDrawer()">&#x2715;</button>
   <a href="#home" onclick="closeNavDrawer()">HOME</a>
-  <a href="#projects" onclick="closeNavDrawer()">PROJECTS</a>
   <a href="#skills" onclick="closeNavDrawer()">SKILLS</a>
+  <a href="#projects" onclick="closeNavDrawer()">PROJECTS</a>
   <a href="#coding-stats" onclick="closeNavDrawer()">CODING</a>
   <a href="#certificates" onclick="closeNavDrawer()">CERTS</a>
   <a href="#linkedin-posts" onclick="closeNavDrawer()">POSTS</a>
@@ -445,8 +662,8 @@ header, section { position:relative; z-index:2; }
   <div class="logo">WELCOME !</div>
   <nav>
     <a href="#home">HOME</a>
-    <a href="#projects">PROJECTS</a>
     <a href="#skills">SKILLS</a>
+    <a href="#projects">PROJECTS</a>
     <a href="#coding-stats">CODING</a>
     <a href="#certificates">CERTS</a>
     <a href="#linkedin-posts">POSTS</a>
@@ -473,55 +690,102 @@ header, section { position:relative; z-index:2; }
         <div class="resume-tooltip" id="resumeTooltip">Downloaded 0 times</div>
       </div>
     </div>
-  <div class="socials">
-      <a href="https://www.instagram.com/tanujmann/" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a href="https://www.linkedin.com/in/tanuj-mann-a8042b297/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-      <a href="https://github.com/TanujMann" target="_blank"><i class="fab fa-github"></i></a>
-      <a href="mailto:tanujmann1494@gmail.com"><i class="fas fa-envelope"></i></a>
-      <a href="https://wa.me/918199000712" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    <div class="socials">
+      <a href="https://www.instagram.com/tanujmann/" target="_blank" title="Instagram">
+        <svg class="social-icon-svg" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </a>
+      <a href="https://www.linkedin.com/in/tanuj-mann-a8042b297/" target="_blank" title="LinkedIn">
+        <svg class="social-icon-svg" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a href="https://github.com/TanujMann" target="_blank" title="GitHub">
+        <svg class="social-icon-svg" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+      <a href="mailto:tanujmann7@gmail.com" title="Email">
+        <svg class="social-icon-svg" viewBox="0 0 24 24"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+      </a>
+      <a href="https://wa.me/918199000712" target="_blank" title="WhatsApp">
+        <svg class="social-icon-svg" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+      </a>
     </div>
   </div>
 </section>
 
-<section class="skills" id="skills">
-  <div class="skills-container">
-    <h2 class="section-title">MY <span>SKILLS</span></h2>
-    <div class="skills-grid">
-      <div class="skill-card"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level expert">Expert</span></div><div class="skill-body"><img src="python.png" alt="Python"></div><div class="skill-footer">Python</div></div>
-      <div class="skill-card"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level expert">Expert</span></div><div class="skill-body"><img src="ml.png" alt="Machine Learning"></div><div class="skill-footer">Machine Learning</div></div>
-      <div class="skill-card"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level advanced">Advanced</span></div><div class="skill-body"><img src="sql.png" alt="SQL"></div><div class="skill-footer">SQL</div></div>
-      <div class="skill-card"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level intermediate">Intermediate</span></div><div class="skill-body"><img src="html.png" alt="HTML"></div><div class="skill-footer">HTML</div></div>
-      <div class="skill-card"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level intermediate">Intermediate</span></div><div class="skill-body"><img src="css.png" alt="CSS"></div><div class="skill-footer">CSS</div></div>
-      <div class="skill-card"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level expert">Expert</span></div><div class="skill-body"><img src="powerbi.png" alt="Power BI"></div><div class="skill-footer">Power BI</div></div>
-      <div class="skill-card"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level advanced">Advanced</span></div><div class="skill-body"><img src="github.png" alt="GitHub"></div><div class="skill-footer">GitHub</div></div>
-      <div class="skill-card"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level expert">Expert</span></div><div class="skill-body"><img src="canva.png" alt="Canva"></div><div class="skill-footer">Canva Designing</div></div>
+<!-- ANIMATED STATS COUNTER -->
+<section class="stats-counter-section" id="stats-counter">
+  <div class="stats-counter-grid">
+    <div class="stat-counter-card reveal reveal-scale">
+      <div class="stat-counter-icon">
+        <svg width="24" height="24" fill="var(--accent)" viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
+      </div>
+      <div class="stat-counter-num" data-target="74" data-suffix="+">0<span class="stat-suffix">+</span></div>
+      <div class="stat-counter-label">LeetCode Solved</div>
+      <div class="stat-counter-sub">Rank #1,822,857</div>
+    </div>
+    <div class="stat-counter-card reveal reveal-scale">
+      <div class="stat-counter-icon">
+        <svg width="24" height="24" fill="#2f8d46" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z"/></svg>
+      </div>
+      <div class="stat-counter-num" style="color:#2f8d46" data-target="70" data-suffix="+">0<span class="stat-suffix">+</span></div>
+      <div class="stat-counter-label">GFG Solved</div>
+      <div class="stat-counter-sub">Score: 218 | Rank #6935</div>
+    </div>
+    <div class="stat-counter-card reveal reveal-scale">
+      <div class="stat-counter-icon">
+        <svg width="24" height="24" fill="var(--accent)" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+      </div>
+      <div class="stat-counter-num" data-target="3" data-suffix="+">0<span class="stat-suffix">+</span></div>
+      <div class="stat-counter-label">Projects Built</div>
+      <div class="stat-counter-sub">Power BI • JS • ML</div>
+    </div>
+    <div class="stat-counter-card reveal reveal-scale">
+      <div class="stat-counter-icon">
+        <svg width="24" height="24" fill="var(--accent)" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+      </div>
+      <div class="stat-counter-num" data-target="4" data-suffix="+">0<span class="stat-suffix">+</span></div>
+      <div class="stat-counter-label">Certificates</div>
+      <div class="stat-counter-sub">Coursera • Google • Microsoft</div>
     </div>
   </div>
 </section>
 
 <section class="projects" id="projects">
   <div class="projects-container">
-    <h2 class="section-title">MY <span>PROJECTS</span></h2>
-    <div class="projects-grid">
-      <div class="project-card" onclick="openProject(1)"><div class="project-top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="project-body"><img src="zom.jpg" alt="Zomato"></div><div class="project-footer"><h4>Zomato Sales Dashboard</h4><p>Power BI • Data Analytics</p></div></div>
-      <div class="project-card" onclick="openProject(2)"><div class="project-top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="project-body"><img src="images/projects/health.png" alt="Health"></div><div class="project-footer"><h4>Health &amp; Fitness Dashboard</h4><p>Power BI • Data Analytics</p></div></div>
-      <div class="project-card" onclick="openProject(3)"><div class="project-top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="project-body"><img src="images/projects/chatbot.png" alt="Bot"></div><div class="project-footer"><h4>Order Tracking AI Bot</h4><p>HTML • CSS • JS</p></div></div>
+    <h2 class="section-title reveal">MY <span>PROJECTS</span></h2>
+    <div class="projects-grid reveal-group">
+      <div class="project-card reveal" onclick="openProject(1)"><div class="project-top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="project-body"><img src="zom.jpg" alt="Zomato"></div><div class="project-footer"><h4>Zomato Sales Dashboard</h4><p>Power BI • Data Analytics</p></div></div>
+      <div class="project-card reveal" onclick="openProject(2)"><div class="project-top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="project-body"><img src="images/projects/health.png" alt="Health"></div><div class="project-footer"><h4>Health &amp; Fitness Dashboard</h4><p>Power BI • Data Analytics</p></div></div>
+      <div class="project-card reveal" onclick="openProject(3)"><div class="project-top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="project-body"><img src="images/projects/chatbot.png" alt="Bot"></div><div class="project-footer"><h4>Order Tracking AI Bot</h4><p>HTML • CSS • JS</p></div></div>
     </div>
   </div>
 </section>
+
+<section class="skills" id="skills">
+    <div class="skills-grid reveal-group">
+      <div class="skill-card reveal"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level expert">Expert</span></div><div class="skill-body"><img src="python.png" alt="Python"></div><div class="skill-footer">Python</div></div>
+      <div class="skill-card reveal"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level expert">Expert</span></div><div class="skill-body"><img src="ml.png" alt="Machine Learning"></div><div class="skill-footer">Machine Learning</div></div>
+      <div class="skill-card reveal"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level advanced">Advanced</span></div><div class="skill-body"><img src="sql.png" alt="SQL"></div><div class="skill-footer">SQL</div></div>
+      <div class="skill-card reveal"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level intermediate">Intermediate</span></div><div class="skill-body"><img src="html.png" alt="HTML"></div><div class="skill-footer">HTML</div></div>
+      <div class="skill-card reveal"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level intermediate">Intermediate</span></div><div class="skill-body"><img src="css.png" alt="CSS"></div><div class="skill-footer">CSS</div></div>
+      <div class="skill-card reveal"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level expert">Expert</span></div><div class="skill-body"><img src="powerbi.png" alt="Power BI"></div><div class="skill-footer">Power BI</div></div>
+      <div class="skill-card reveal"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level advanced">Advanced</span></div><div class="skill-body"><img src="github.png" alt="GitHub"></div><div class="skill-footer">GitHub</div></div>
+      <div class="skill-card reveal"><div class="skill-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span><span class="skill-level expert">Expert</span></div><div class="skill-body"><img src="canva.png" alt="Canva"></div><div class="skill-footer">Canva Designing</div></div>
+    </div>
+  </div>
+</section>
+
 
 <!-- ═══════════════════════════════════════════ -->
 <!--   CODING STATS — LEETCODE + GFG AUTO FETCH  -->
 <!-- ═══════════════════════════════════════════ -->
 <section class="coding-stats" id="coding-stats">
   <div class="coding-container">
-    <h2 class="section-title">CODING <span>STATS</span></h2>
-    <p class="section-subtitle">Live data auto-fetched from LeetCode &amp; GeeksForGeeks APIs</p>
+    <h2 class="section-title reveal">CODING <span>STATS</span></h2>
+    <p class="section-subtitle reveal">Live data auto-fetched from LeetCode &amp; GeeksForGeeks APIs</p>
 
     <div class="coding-platforms">
 
       <!-- LEETCODE CARD -->
-      <div class="platform-card leetcode-card">
+      <div class="platform-card leetcode-card reveal reveal-left">
         <div class="platform-card-top">
           <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
           <span class="platform-live-badge lc-badge"><span class="platform-live-dot lc-dot"></span>LIVE</span>
@@ -535,7 +799,7 @@ header, section { position:relative; z-index:2; }
             </div>
           </div>
           <div class="platform-rank-badge lc-rank-badge">
-            <i class="fas fa-trophy"></i>
+            <svg style="width:18px;height:18px;fill:currentColor" viewBox="0 0 24 24"><path d="M18 2h2v6c0 3.31-2.69 6-6 6h-4C6.69 14 4 11.31 4 8V2h2v6c0 2.21 1.79 4 4 4h4c2.21 0 4-1.79 4-4V2zM11 16h2v2h3v2H8v-2h3v-2zM2 2h2v4H2V2zm18 0h2v4h-2V2z"/></svg>
             <span id="lc-ranking">—</span>
           </div>
         </div>
@@ -568,8 +832,14 @@ header, section { position:relative; z-index:2; }
         </div>
 
         <div id="lc-meta" class="platform-meta" style="display:none">
-          <div class="meta-chip lc-chip"><i class="fas fa-percentage"></i><span id="lc-acceptance">—</span>% Accept</div>
-          <div class="meta-chip lc-chip"><i class="fas fa-crown"></i><span id="lc-contrib">—</span> Pts</div>
+          <div class="meta-chip lc-chip">
+            <span style="font-size:11px;font-weight:800">%</span>
+            <span id="lc-acceptance">56.3</span> Accept
+          </div>
+          <div class="meta-chip lc-chip">
+            <svg style="width:12px;height:12px;fill:currentColor;flex-shrink:0" viewBox="0 0 24 24"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm2.7 2h8.6l.9 2H6.8l.9-2z"/></svg>
+            <span id="lc-contrib">—</span> Pts
+          </div>
         </div>
 
         <div id="lc-error" class="platform-error" style="display:none">
@@ -585,7 +855,7 @@ header, section { position:relative; z-index:2; }
       </div>
 
       <!-- GFG CARD -->
-      <div class="platform-card gfg-card">
+      <div class="platform-card gfg-card reveal reveal-right">
         <div class="platform-card-top">
           <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
           <span class="platform-live-badge gfg-badge"><span class="platform-live-dot gfg-dot"></span>LIVE</span>
@@ -599,7 +869,7 @@ header, section { position:relative; z-index:2; }
             </div>
           </div>
           <div class="platform-rank-badge gfg-rank-badge">
-            <i class="fas fa-medal"></i>
+            <svg style="width:18px;height:18px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z"/></svg>
             <span id="gfg-ranking">—</span>
           </div>
         </div>
@@ -634,9 +904,9 @@ header, section { position:relative; z-index:2; }
         </div>
 
         <div id="gfg-meta" class="platform-meta" style="display:none">
-          <div class="meta-chip gfg-chip"><i class="fas fa-fire"></i><span id="gfg-streak">—</span> Day Streak</div>
-          <div class="meta-chip gfg-chip"><i class="fas fa-star"></i><span id="gfg-score">—</span> Score</div>
-          <div class="meta-chip gfg-chip"><i class="fas fa-calendar-check"></i><span id="gfg-monthly">—</span> Monthly</div>
+          <div class="meta-chip gfg-chip"><svg style="width:11px;height:11px;fill:currentColor;flex-shrink:0" viewBox="0 0 24 24"><path d="M13.5 .67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/></svg><span id="gfg-streak">—</span> Day Streak</div>
+          <div class="meta-chip gfg-chip"><svg style="width:11px;height:11px;fill:currentColor;flex-shrink:0" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><span id="gfg-score">—</span> Score</div>
+          <div class="meta-chip gfg-chip"><svg style="width:11px;height:11px;fill:currentColor;flex-shrink:0" viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg><span id="gfg-monthly">—</span> Monthly</div>
         </div>
 
         <div id="gfg-error" class="platform-error" style="display:none">
@@ -658,13 +928,13 @@ header, section { position:relative; z-index:2; }
 <!-- CERTIFICATES -->
 <section class="certificates" id="certificates">
   <div class="certificates-container">
-    <h2 class="section-title">MY <span>CERTIFICATES</span></h2>
-    <p class="section-subtitle">Credentials that validate my expertise</p>
-    <div class="certificates-grid">
-      <div class="cert-card" onclick="openCert(1)"><div class="cert-top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="cert-ribbon">CERTIFIED</div><div class="cert-body"><div class="cert-icon"><i class="fas fa-certificate"></i></div><h4 class="cert-title">Python for Data Science</h4><p class="cert-issuer"><i class="fas fa-building"></i> Coursera</p><p class="cert-date"><i class="fas fa-calendar"></i> 2024</p></div><div class="cert-footer"><span class="cert-tag">Python</span><span class="cert-tag">Data Science</span></div></div>
-      <div class="cert-card" onclick="openCert(2)"><div class="cert-top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="cert-ribbon">CERTIFIED</div><div class="cert-body"><div class="cert-icon"><i class="fas fa-brain"></i></div><h4 class="cert-title">Machine Learning Fundamentals</h4><p class="cert-issuer"><i class="fas fa-building"></i> Google</p><p class="cert-date"><i class="fas fa-calendar"></i> 2024</p></div><div class="cert-footer"><span class="cert-tag">ML</span><span class="cert-tag">AI</span></div></div>
-      <div class="cert-card" onclick="openCert(3)"><div class="cert-top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="cert-ribbon">CERTIFIED</div><div class="cert-body"><div class="cert-icon"><i class="fas fa-chart-bar"></i></div><h4 class="cert-title">Power BI Data Analyst</h4><p class="cert-issuer"><i class="fas fa-building"></i> Microsoft</p><p class="cert-date"><i class="fas fa-calendar"></i> 2023</p></div><div class="cert-footer"><span class="cert-tag">Power BI</span><span class="cert-tag">Analytics</span></div></div>
-      <div class="cert-card" onclick="openCert(4)"><div class="cert-top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="cert-ribbon">CERTIFIED</div><div class="cert-body"><div class="cert-icon"><i class="fas fa-database"></i></div><h4 class="cert-title">SQL for Beginners</h4><p class="cert-issuer"><i class="fas fa-building"></i> Udemy</p><p class="cert-date"><i class="fas fa-calendar"></i> 2023</p></div><div class="cert-footer"><span class="cert-tag">SQL</span><span class="cert-tag">Database</span></div></div>
+    <h2 class="section-title reveal">MY <span>CERTIFICATES</span></h2>
+    <p class="section-subtitle reveal">Credentials that validate my expertise</p>
+    <div class="certificates-grid reveal-group">
+      <div class="cert-card reveal" onclick="openCert(1)"><div class="cert-top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="cert-ribbon">CERTIFIED</div><div class="cert-body"><div class="cert-icon"><i class="fas fa-certificate"></i></div><h4 class="cert-title">Python for Data Science</h4><p class="cert-issuer"><i class="fas fa-building"></i> Coursera</p><p class="cert-date"><i class="fas fa-calendar"></i> 2024</p></div><div class="cert-footer"><span class="cert-tag">Python</span><span class="cert-tag">Data Science</span></div></div>
+      <div class="cert-card reveal" onclick="openCert(2)"><div class="cert-top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="cert-ribbon">CERTIFIED</div><div class="cert-body"><div class="cert-icon"><i class="fas fa-brain"></i></div><h4 class="cert-title">Machine Learning Fundamentals</h4><p class="cert-issuer"><i class="fas fa-building"></i> Google</p><p class="cert-date"><i class="fas fa-calendar"></i> 2024</p></div><div class="cert-footer"><span class="cert-tag">ML</span><span class="cert-tag">AI</span></div></div>
+      <div class="cert-card reveal" onclick="openCert(3)"><div class="cert-top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="cert-ribbon">CERTIFIED</div><div class="cert-body"><div class="cert-icon"><i class="fas fa-chart-bar"></i></div><h4 class="cert-title">Power BI Data Analyst</h4><p class="cert-issuer"><i class="fas fa-building"></i> Microsoft</p><p class="cert-date"><i class="fas fa-calendar"></i> 2023</p></div><div class="cert-footer"><span class="cert-tag">Power BI</span><span class="cert-tag">Analytics</span></div></div>
+      <div class="cert-card reveal" onclick="openCert(4)"><div class="cert-top"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div><div class="cert-ribbon">CERTIFIED</div><div class="cert-body"><div class="cert-icon"><i class="fas fa-database"></i></div><h4 class="cert-title">SQL for Beginners</h4><p class="cert-issuer"><i class="fas fa-building"></i> Udemy</p><p class="cert-date"><i class="fas fa-calendar"></i> 2023</p></div><div class="cert-footer"><span class="cert-tag">SQL</span><span class="cert-tag">Database</span></div></div>
     </div>
   </div>
 </section>
@@ -673,8 +943,8 @@ header, section { position:relative; z-index:2; }
 <section class="linkedin-posts" id="linkedin-posts">
   <div class="linkedin-header">
     <div class="li-eyebrow">✦ LATEST UPDATES ✦</div>
-    <h2 class="section-title">ON <span>LINKEDIN</span></h2>
-    <p class="section-subtitle">My latest posts — edit in <code>index.html</code></p>
+    <h2 class="section-title reveal">ON <span>LINKEDIN</span></h2>
+    <p class="section-subtitle reveal">My latest posts — edit in <code>index.html</code></p>
     <a href="https://www.linkedin.com/in/tanuj-mann-a8042b297/" target="_blank" class="li-profile-btn">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
       View Full Profile
@@ -961,7 +1231,7 @@ const MY_LC_STATS = {
 // ── GFG stats — hardcoded from your real GFG profile ──
 const MY_GFG_STATS = {
   total: 70, school: 0, basic: 8, easy: 20, medium: 41, hard: 1,
-  streak: "0", score: "218", monthly: "—", rank: "6935"
+  streak: "0", score: "218", monthly: "66", rank: "6935"
 };
 
 async function fetchLeetCode() {
@@ -1035,8 +1305,8 @@ function renderLCStats(data) {
   animateNum("lc-hard",  hard);
 
   safeSet("lc-ranking",    data.ranking    ? `#${Number(data.ranking).toLocaleString()}` : "—");
-  safeSet("lc-acceptance", data.acceptanceRate ? Number(data.acceptanceRate).toFixed(1) : "—");
-  safeSet("lc-contrib",    data.contributionPoints ? Number(data.contributionPoints).toLocaleString() : "—");
+  safeSet("lc-acceptance", data.acceptanceRate ? Number(data.acceptanceRate).toFixed(1) : "56.3");
+  safeSet("lc-contrib",    data.contributionPoints !== undefined ? Number(data.contributionPoints).toLocaleString() : "0");
 
   setTimeout(() => {
     setBar("lc-easy-bar",  easy / tEasy  * 100);
@@ -1120,8 +1390,8 @@ function renderGFGStats(d) {
   animateNum("gfg-med",    d.medium || 0);
   animateNum("gfg-hard",   d.hard   || 0);
   safeSet("gfg-streak",  d.streak  || "0");
-  safeSet("gfg-score",   d.score   || "—");
-  safeSet("gfg-monthly", d.monthly || "—");
+  safeSet("gfg-score",   d.score   || "0");
+  safeSet("gfg-monthly", d.monthly || "0");
 
   const T = d.total || 1;
   setTimeout(() => {
@@ -1220,15 +1490,15 @@ form.addEventListener("submit", function(e) {
   btn.style.opacity = "0.7";
 
   const templateParams = {
-    from_name:  nameVal,
-    from_email: emailVal,
+    name:       nameVal,           // matches {{name}} in template
+    email:      emailVal,          // matches {{email}} in To Email field
+    title:      "New message from " + nameVal,  // matches {{title}} in template
     phone:      phoneVal  || "Not provided",
     message:    messageVal,
-    to_name:    "Tanuj Mann",
+    from_name:  nameVal,
+    from_email: emailVal,
     reply_to:   emailVal,
-    user_name:  nameVal,
-    user_email: emailVal,
-    user_message: messageVal
+    to_name:    "Tanuj Mann"
   };
 
   emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
@@ -1416,19 +1686,28 @@ window.trackResume = function(e) {
 // ╔══════════════════════════════════════════════════════════╗
 // ║              SCROLL PROGRESS                             ║
 // ╚══════════════════════════════════════════════════════════╝
+// Throttled scroll handler — prevents layout jumping on mobile
+let scrollTicking = false;
 window.addEventListener("scroll", () => {
-  const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-  document.getElementById("scroll-progress").style.width = pct + "%";
+  if (!scrollTicking) {
+    requestAnimationFrame(() => {
+      const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      const prog = document.getElementById("scroll-progress");
+      if (prog) prog.style.width = pct + "%";
 
-  // Active nav link
-  const sections  = document.querySelectorAll("section");
-  const navLinks  = document.querySelectorAll(".navbar nav a");
-  let current = "";
-  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 90) current = s.id; });
-  navLinks.forEach(a => {
-    a.classList.toggle("active", a.getAttribute("href") === "#" + current);
-  });
-});
+      // Active nav link
+      const sections = document.querySelectorAll("section");
+      const navLinks = document.querySelectorAll(".navbar nav a");
+      let current = "";
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 90) current = s.id; });
+      navLinks.forEach(a => {
+        a.classList.toggle("active", a.getAttribute("href") === "#" + current);
+      });
+      scrollTicking = false;
+    });
+    scrollTicking = true;
+  }
+}, { passive: true });
 
 // ╔══════════════════════════════════════════════════════════╗
 // ║              PARTICLES                                   ║
@@ -1515,13 +1794,84 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchLeetCode();
   fetchGFG();
   renderLinkedInPosts();
+  initScrollReveal();
+  initCounters();
 });
+
+// ╔══════════════════════════════════════════════════════════╗
+// ║              SCROLL REVEAL                               ║
+// ╚══════════════════════════════════════════════════════════╝
+function initScrollReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        // Don't unobserve — keep visible once revealed
+      }
+    });
+  }, {
+    threshold: 0.12,
+    rootMargin: "0px 0px -40px 0px"
+  });
+
+  // Observe all reveal elements
+  document.querySelectorAll(".reveal").forEach(el => {
+    observer.observe(el);
+  });
+}
+
+// ╔══════════════════════════════════════════════════════════╗
+// ║              ANIMATED COUNTER                            ║
+// ╚══════════════════════════════════════════════════════════╝
+function initCounters() {
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const card = entry.target;
+        const numEl = card.querySelector(".stat-counter-num");
+        if (!numEl || card.dataset.counted) return;
+        card.dataset.counted = "true";
+
+        const target  = parseInt(numEl.dataset.target) || 0;
+        const suffix  = numEl.dataset.suffix || "";
+        const suffixEl = numEl.querySelector(".stat-suffix");
+        const duration = 1800;
+        const startTime = performance.now();
+
+        function updateCount(currentTime) {
+          const elapsed  = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          // Ease out cubic
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = Math.floor(eased * target);
+
+          // Set text without losing the suffix span
+          numEl.childNodes[0].textContent = current;
+          if (suffixEl) suffixEl.textContent = suffix;
+
+          if (progress < 1) {
+            requestAnimationFrame(updateCount);
+          } else {
+            numEl.childNodes[0].textContent = target;
+          }
+        }
+
+        requestAnimationFrame(updateCount);
+        counterObserver.unobserve(card);
+      }
+    });
+  }, { threshold: 0.4 });
+
+  document.querySelectorAll(".stat-counter-card").forEach(card => {
+    counterObserver.observe(card);
+  });
+}
 
 </script>
 
 <!-- ABOUT -->
 <section class="about" id="about">
-  <div class="about-container">
+  <div class="about-container reveal">
     <div class="about-profile">
       <div class="profile-ring">
         <img id="aboutProfileImage" src="profile1.jpg" alt="Tanuj Mann"/>
@@ -1537,7 +1887,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <!-- CONTACT -->
 <section class="contact" id="contact">
-  <div class="contact-container">
+  <div class="contact-container reveal reveal-scale">
     <div class="contact-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
     <h2>CONTACT <span>ME</span></h2>
     <form id="contactForm" class="contact-form">
@@ -1548,32 +1898,19 @@ document.addEventListener("DOMContentLoaded", () => {
       <button type="submit">Send Message</button>
     </form>
     <div class="contact-cta">
-
-  <a 
-    href="mailto:mannshab63@gmail.com" 
-    class="cta-card"
-    target="_blank">
-    <i class="fas fa-envelope"></i>
-    <span>Email</span>
-  </a>
-
-  <a 
-    href="https://wa.me/918199000712?text=Hi%20Tanuj,%20I%20visited%20your%20portfolio%20and%20would%20like%20to%20connect."
-    class="cta-card whatsapp"
-    target="_blank">
-    <i class="fab fa-whatsapp"></i>
-    <span>WhatsApp</span>
-  </a>
-
-  <a 
-    href="https://www.linkedin.com/in/tanuj-mann-a8042b297/?invite=true"
-  class="cta-card"
-  target="_blank">
-    <i class="fab fa-linkedin-in"></i>
-    <span>LinkedIn</span>
-  </a>
-
-</div>
+      <a href="mailto:tanujmann7@gmail.com" class="cta-card" target="_blank">
+        <svg style="width:24px;height:24px;fill:var(--accent);margin-bottom:7px" viewBox="0 0 24 24"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+        <span>Email</span>
+      </a>
+      <a href="https://wa.me/918199000712?text=Hi%20Tanuj" class="cta-card whatsapp" target="_blank">
+        <svg style="width:24px;height:24px;fill:#25D366;margin-bottom:7px" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        <span>WhatsApp</span>
+      </a>
+      <a href="https://www.linkedin.com/in/tanuj-mann-a8042b297/" class="cta-card" target="_blank">
+        <svg style="width:24px;height:24px;fill:var(--accent);margin-bottom:7px" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        <span>LinkedIn</span>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -1628,7 +1965,4 @@ document.addEventListener("DOMContentLoaded", () => {
     <p class="cert-modal-date" id="certModalDate"></p>
     <p class="cert-modal-desc" id="certModalDesc"></p>
     <div class="cert-modal-tags" id="certModalTags"></div>
-<a id="certModalLink" href="#" target="_blank" class="cert-modal-btn">View Certificate</a>
-
-
-
+    <a id="certModalLink" href="#" target="_blank" class="cert-modal-btn">View Certif
