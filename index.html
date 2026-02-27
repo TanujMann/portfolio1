@@ -816,9 +816,9 @@ html, body {
       <div class="stat-counter-icon">
         <svg width="24" height="24" fill="#2f8d46" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z"/></svg>
       </div>
-      <div class="stat-counter-num" style="color:#2f8d46" data-target="70" data-suffix="+">0<span class="stat-suffix">+</span></div>
+      <div class="stat-counter-num" style="color:#2f8d46" data-target="74" data-suffix="+">0<span class="stat-suffix">+</span></div>
       <div class="stat-counter-label">GFG Solved</div>
-      <div class="stat-counter-sub">Score: 218 | Rank #6935</div>
+      <div class="stat-counter-sub">Score: 231 | Rank #6781</div>
     </div>
     <div class="stat-counter-card reveal reveal-scale">
       <div class="stat-counter-icon">
@@ -1323,8 +1323,8 @@ const MY_LC_STATS = {
 };
 // ── GFG stats — hardcoded from your real GFG profile ──
 const MY_GFG_STATS = {
-  total: 70, school: 0, basic: 8, easy: 20, medium: 41, hard: 1,
-  streak: "0", score: "218", monthly: "66", rank: "6935"
+  total: 74, school: 0, basic: 9, easy: 20, medium: 44, hard: 1,
+  streak: "0", score: "231", monthly: "70", rank: "6781"
 };
 
 async function fetchLeetCode() {
@@ -1422,46 +1422,48 @@ async function fetchGFG() {
   if (linkEl) linkEl.href = `https://auth.geeksforgeeks.org/user/${username}`;
   if (userEl) userEl.textContent = `@${username}`;
 
-  // Always render hardcoded stats first (instant, no loading)
+  // Always show hardcoded stats instantly
   renderGFGStats(MY_GFG_STATS);
 
-  // Try multiple live APIs in background
-  const apiUrls = [
+  // Try live APIs in background — if any works, update display
+  const apis = [
     `https://gfgstatsapi.vercel.app/api/${username}`,
-    `https://gfg-api.onrender.com/api/user/${username}`,
+    `https://gfg-stats-api.vercel.app/api/${username}`,
     `https://geeks-for-geeks-stats-api.vercel.app/?raw=Y&userName=${username}`,
-    `https://api.allorigins.win/get?url=${encodeURIComponent(`https://gfg-stats.tashif.codes/${username}`)}`
+    `https://api.allorigins.win/get?url=${encodeURIComponent(`https://gfgstatsapi.vercel.app/api/${username}`)}`
   ];
 
-  for (const url of apiUrls) {
+  for (const url of apis) {
     try {
-      const res  = await fetch(url, { signal: AbortSignal.timeout(5000) });
+      const res  = await fetch(url, { signal: AbortSignal.timeout(6000) });
       if (!res.ok) continue;
       const json = await res.json();
-
-      // Handle allorigins wrapper
-      const raw = json.contents ? JSON.parse(json.contents) : json;
-      if (!raw || raw.error || raw.message === "User not found") continue;
+      const raw  = json.contents ? JSON.parse(json.contents) : json;
+      if (!raw || raw.error || raw.detail) continue;
 
       const info   = raw.info || raw.data || raw;
-      const solved = raw.problemsByDifficulty || raw.solvedStats || raw.problemsSolved || {};
+      const solved = raw.problemsByDifficulty || raw.solvedStats || {};
 
       const total  = parseInt(info.totalProblemsSolved || info.total || raw.totalProblemsSolved || 0);
-      if (total === 0 && !info.codingScore) continue; // skip empty responses
+      const score  = info.codingScore || info.score || "—";
 
-      renderGFGStats({
-        total,
-        school: parseInt(solved.school?.count ?? solved.school ?? 0),
-        basic:  parseInt(solved.basic?.count  ?? solved.basic  ?? 0),
-        easy:   parseInt(solved.easy?.count   ?? solved.easy   ?? 0),
-        medium: parseInt(solved.medium?.count ?? solved.medium ?? 0),
-        hard:   parseInt(solved.hard?.count   ?? solved.hard   ?? 0),
-        streak: info.currentStreak || info.streak || "0",
-        score:  info.codingScore   || info.score  || "—",
-        monthly:info.monthlyCodingScore || "—",
-        rank:   info.instituteRank || info.rank   || "—"
-      });
-      break; // success — stop trying other APIs
+      // Only update if live data looks valid (more than hardcoded)
+      if (total >= MY_GFG_STATS.total) {
+        renderGFGStats({
+          total,
+          school: parseInt(solved.school?.count ?? solved.school ?? MY_GFG_STATS.school),
+          basic:  parseInt(solved.basic?.count  ?? solved.basic  ?? MY_GFG_STATS.basic),
+          easy:   parseInt(solved.easy?.count   ?? solved.easy   ?? MY_GFG_STATS.easy),
+          medium: parseInt(solved.medium?.count ?? solved.medium ?? MY_GFG_STATS.medium),
+          hard:   parseInt(solved.hard?.count   ?? solved.hard   ?? MY_GFG_STATS.hard),
+          streak: info.currentStreak  || MY_GFG_STATS.streak,
+          score:  score               || MY_GFG_STATS.score,
+          monthly:info.monthlyCodingScore || MY_GFG_STATS.monthly,
+          rank:   info.instituteRank  || MY_GFG_STATS.rank
+        });
+        console.log("✅ GFG live data loaded from:", url);
+        break;
+      }
     } catch (_) { /* try next */ }
   }
 }
