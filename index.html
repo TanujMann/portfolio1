@@ -1899,29 +1899,41 @@ async function initVisitorCounter() {
   if (!el) return;
 
   try {
-    // countapi.xyz — free, no signup, persistent counter per namespace
-    const res  = await fetch("https://api.countapi.xyz/hit/tanujmann.co.in/visits");
+    // counterapi.dev — free, no signup, persistent, works on static sites
+    const res  = await fetch("https://counterapi.dev/api/tanujmann-portfolio/visits/hit", {
+      method: "GET"
+    });
     const data = await res.json();
-    if (data && data.value) {
-      // Animate the number counting up
-      const target = data.value;
-      const duration = 1200;
+    const count = data.count || data.value || data.visits || null;
+
+    if (count) {
+      const duration = 1400;
       const start = performance.now();
       function tick(now) {
         const progress = Math.min((now - start) / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
-        el.textContent = Math.floor(eased * target).toLocaleString();
+        el.textContent = Math.floor(eased * count).toLocaleString();
         if (progress < 1) requestAnimationFrame(tick);
-        else el.textContent = target.toLocaleString();
+        else el.textContent = count.toLocaleString();
       }
       requestAnimationFrame(tick);
     } else {
-      el.textContent = "—";
+      throw new Error("no count");
     }
   } catch (_) {
-    // Fallback: show a realistic seeded number based on date
-    const seed = Math.floor(Date.now() / 86400000) * 7 + 1247;
-    el.textContent = seed.toLocaleString();
+    // Fallback to hits.sh — another free counter API
+    try {
+      const res2 = await fetch("https://hits.sh/tanujmann.co.in.json");
+      const data2 = await res2.json();
+      const count2 = data2.count || null;
+      if (count2) {
+        el.textContent = Number(count2).toLocaleString();
+      } else {
+        throw new Error("no count2");
+      }
+    } catch (_2) {
+      el.textContent = "—";
+    }
   }
 }
 
