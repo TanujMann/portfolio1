@@ -58,7 +58,7 @@ header, section { position:relative; z-index:2; }
 /* ═══════════════════════════════════════ HERO ═════════ */
 .hero { display:flex; align-items:center; min-height:100vh; padding:0 80px; gap:40px; }
 .hero-image { flex:1; display:flex; justify-content:center; }
-.hero-image img { width:100%; max-width:420px; object-fit:cover; object-position:center top; filter:grayscale(100%) brightness(.9); border-radius:12px; transition:filter .8s, opacity .8s; }
+.hero-image img { width:100%; max-width:500px; object-fit:cover; object-position:center top; filter:grayscale(100%) brightness(.9); border-radius:12px; transition:filter .8s, opacity .8s; }
 .hero-image img:hover { filter:grayscale(0%) brightness(1); }
 .hero-content { flex:1.2; display:flex; flex-direction:column; align-items:flex-start; animation:heroSlide 1s ease forwards; }
 @keyframes heroSlide { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
@@ -2089,3 +2089,4 @@ function initCounters() {
     <p class="cert-modal-desc" id="certModalDesc"></p>
     <div class="cert-modal-tags" id="certModalTags"></div>
     <a id="certModalLink" href="#" target="_blank" class="cert-modal-btn">View Certif
+
